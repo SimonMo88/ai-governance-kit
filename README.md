@@ -62,10 +62,86 @@ At minimum, define:
 Do not copy product facts, package names, paths, commands, or exceptions from
 the source repository that produced this kit.
 
-## AI usage
+## Install as an AI skill
 
-Install or expose this directory as an AI skill, then request one of these
-outcomes in natural language:
+Keep this repository together when installing it. `SKILL.md` loads the files in
+`references/` and uses the Markdown templates at the repository root; copying
+only `SKILL.md` produces an incomplete skill.
+
+The simplest personal installation uses one checkout and symlinks it into each
+agent's skill directory:
+
+```bash
+git clone git@github.com:SimonMo88/ai-governance-kit.git ~/ai-governance-kit
+mkdir -p ~/.claude/skills ~/.agents/skills
+ln -s ~/ai-governance-kit ~/.claude/skills/ai-governance
+ln -s ~/ai-governance-kit ~/.agents/skills/ai-governance
+```
+
+If the repository is already cloned, point the symlinks at that existing
+checkout instead. The commands deliberately fail when a destination already
+exists; inspect the existing installation before replacing it.
+
+To update both agents later, update the shared checkout:
+
+```bash
+git -C ~/ai-governance-kit pull --ff-only
+```
+
+### Claude Code
+
+Claude Code discovers personal skills at
+`~/.claude/skills/<skill-name>/SKILL.md`. The personal symlink above makes the
+kit available in every project. For a project-only installation, expose the
+checkout inside that repository instead:
+
+```bash
+mkdir -p .claude/skills
+ln -s /absolute/path/to/ai-governance-kit .claude/skills/ai-governance
+```
+
+Claude Code enables a discovered skill by default. If the top-level skills
+directory was created after the current session started, restart Claude Code.
+Then run `/skills` to confirm that `ai-governance` is listed and invoke it with
+`/ai-governance`, or make a natural-language request that matches its
+description. See Anthropic's
+[Claude Code skills documentation](https://code.claude.com/docs/en/skills) for
+the current discovery and enablement behavior.
+
+Claude.ai Cowork and cloud sessions do not read `~/.claude/skills` from the
+local machine. To use the kit there, upload and enable it for the Claude.ai
+account from **Customize > Skills**, or commit a project-scoped copy under
+`.claude/skills/ai-governance/` for Claude cloud sessions.
+
+### ChatGPT and Codex
+
+ChatGPT desktop and Codex use the same standalone skill format. Codex discovers
+personal skills at `~/.agents/skills/<skill-name>/SKILL.md`, so the personal
+symlink above keeps the existing Codex workflow available in every repository.
+For a repository-only installation, expose the checkout from that repository:
+
+```bash
+mkdir -p .agents/skills
+ln -s /absolute/path/to/ai-governance-kit .agents/skills/ai-governance
+```
+
+Local skills are enabled when discovered. In the ChatGPT desktop app, open
+**Skills** in the sidebar and select `@ai-governance`. In Codex, run `/skills`
+to confirm discovery and mention `$ai-governance` explicitly, or make a request
+that matches the skill description. Codex normally detects changes
+automatically; restart it if a new installation does not appear. See OpenAI's
+[skills documentation](https://learn.chatgpt.com/docs/build-skills) for the
+current ChatGPT and Codex behavior.
+
+A local standalone skill is not installed into ChatGPT on the web or mobile.
+Those surfaces require the skill to be distributed as a
+[plugin](https://learn.chatgpt.com/docs/plugins). The repository is currently a
+standalone skill, not a plugin package.
+
+### Use the skill
+
+After the relevant agent lists the skill, request one of these outcomes in
+natural language:
 
 ```text
 Use ai-governance to introduce AI governance to this repository.
