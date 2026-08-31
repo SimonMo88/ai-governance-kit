@@ -1,5 +1,6 @@
 # AI repository governance kit
 
+![AI Governance Kit](assets/ai-governance-kit-banner.jpg)
 This directory is a stack-neutral set of instructions for AI coding agents and
 human contributors. It defines how work should be understood, implemented,
 reviewed, and verified without assuming a language, framework, package manager,
