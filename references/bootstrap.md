@@ -6,18 +6,16 @@ introduce AI-assisted development.
 ## Confirm line and file length policies
 
 After inspecting existing formatter, linter, editor, and file-size settings, ask
-the four length questions required by `SKILL.md` and wait for the user's answers.
-Show concrete 80-, 100-, and 120-character examples, explain strict versus loose
-behavior with a representative passing and over-limit line, and ask whether
-documentation files, documentation comments, and docstrings are included or
-omitted. Present 300, 500, and 1,000 lines as illustrative maximum file lengths,
-explain how an over-limit file should be split or excepted, and identify the
-treatment of machine-owned files. Do not choose defaults on the user's behalf.
+the two length questions required by `SKILL.md` and wait for the user's answers.
+Present 300, 500, and 1,000 lines and 80, 100, and 120 characters as
+illustrative choices rather than defaults. Explain that both limits are strict
+and give a representative over-limit file and line. Do not choose defaults on
+the user's behalf.
 
-Record the selected character maximum, file-line maximum, enforcement mode,
-documentation treatment, file exclusions, and exception process in the
-engineering authority and `.ai-governance/state.md`. Record whether current
-tooling actually enforces each selection in `.ai-governance/enforcement.md`.
+Record the selected character maximum, file-line maximum, strict enforcement,
+automatic exclusions, and exception process in the engineering authority and
+`.ai-governance/state.md`. Record whether current tooling actually enforces each
+selection in `.ai-governance/enforcement.md`.
 
 Before editing active governance, create and verify the pre-change version
 required by `versioning-and-revert.md`. Record would-be new files as absent.
@@ -106,6 +104,6 @@ action.
   the resulting authority map.
 - Confirm the root `.gitignore` exists and ignores `/.ai-governance/` without a
   duplicate rule.
-- Confirm the selected character limit, file-line limit, strict or loose mode,
-  documentation treatment, file exclusions, and exception process agree across
-  the engineering authority, state, and enforcement record.
+- Confirm the selected character limit, file-line limit, strict enforcement,
+  automatic exclusions, and exception process agree across the engineering
+  authority, state, and enforcement record.

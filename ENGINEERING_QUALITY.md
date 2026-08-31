@@ -23,30 +23,27 @@ operate, and safely modify it.
 ## Line length
 
 - Maximum line length: `<MAX_LINE_LENGTH>` characters.
-- Enforcement mode: `<STRICT_OR_LOOSE>`.
-- Documentation treatment: `<INCLUDE_OR_OMIT_DOCUMENTATION>`.
-- Strict enforcement means every applicable maintained code or configuration line
-  over the maximum fails the configured check unless it matches an explicit
-  repository exception. For example, with a 100-character maximum, a
-  101-character applicable line fails verification.
-- Loose enforcement means the maximum is a readability target. Prefer wrapping
-  when it improves readability, but allow a justified longer line without failing
-  verification solely because of length.
-- When documentation is included, apply the selected mode to maintained
-  documentation files, documentation comments, and docstrings. When documentation
-  is omitted, exempt all three from line-length counting.
-- Define repository-specific treatment for generated files, lockfiles, snapshots,
-  unbreakable URLs, and other machine-owned or indivisible content. Do not hide
-  exceptions inside tooling configuration without documenting them.
+- Enforcement is strict. Follow the limit during implementation and verification
+  even when no automated check exists. Every applicable maintained code or
+  configuration line over the maximum must be corrected or covered by an
+  explicit repository exception. For example, with a 100-character maximum, a
+  101-character applicable code line fails verification.
+- Exclude documentation files, documentation comments, docstrings, generated
+  files, vendored code, lockfiles, snapshots, and other machine-owned content
+  from the limit.
+- Define repository-specific treatment for indivisible code content such as
+  unbreakable URLs. Do not hide exceptions inside tooling configuration without
+  documenting them.
 
 ## Responsibilities and structure
 
 - Maximum maintained file length: `<MAX_FILE_LINES>` lines.
+- Count maintained code and configuration lines. Exclude documentation files,
+  documentation comments, docstrings, generated files, vendored code, lockfiles,
+  snapshots, and other machine-owned content.
 - Files over the selected maximum must be split around meaningful
   responsibilities or covered by a documented exception with an owner,
   rationale, precise scope, and review or expiry condition.
-- Define whether generated files, vendored code, lockfiles, snapshots, and other
-  machine-owned files are included or excluded from the file-line limit.
 - Give every module one clear primary responsibility.
 - Treat the selected file maximum as a maintainability boundary, not a reason to
   compress code or create fragments without clear ownership.
@@ -130,5 +127,5 @@ Before completing a change, verify:
    have been considered where relevant.
 7. No unrelated changes, obsolete code, or unnecessary complexity were added.
 8. Formatting, static analysis, tests, and required builds have been run.
-9. Applicable lines follow the repository's selected maximum, enforcement mode,
-   documentation treatment, and documented exceptions.
+9. Applicable code follows the repository's selected strict line and file
+   maximums and documented exceptions.

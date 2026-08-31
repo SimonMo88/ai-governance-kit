@@ -35,42 +35,34 @@ editing files.
 ## Required line and file length decisions
 
 Before every bootstrap or upgrade, inspect any existing formatter, linter, and
-editor settings and any file-size checks, then ask the user all four questions
-below and wait for their answers:
+editor settings and any file-size checks, then ask the user these two questions
+and wait for both answers:
 
-1. What maximum number of characters should one line contain? Give examples such
-   as 80 characters for compact code, 100 for a balanced limit, and 120 for
-   wider codebases.
-2. Should the character limit be strict or loose? Explain that strict means an
-   applicable line over the limit fails the configured check unless it matches
-   an explicit repository exception, while loose means the limit is a
-   readability target and a justified longer line does not fail verification
-   solely because of length.
-3. Should documentation be included in the character count or omitted? Explain
-   that inclusion covers maintained documentation files, documentation comments,
-   and docstrings, while omission exempts all three from the limit.
-4. What maximum number of lines should one maintained file contain? Present 300,
-   500, and 1,000 lines as illustrative choices rather than defaults. Explain
-   that files over the selected maximum must be split around meaningful
-   responsibilities or covered by a documented repository exception. Generated,
-   vendored, lock, snapshot, and other machine-owned files need an explicit
-   inclusion or exclusion decision.
+1. What is the maximum number of lines allowed in a code file? Present 300, 500,
+   and 1,000 lines as illustrative choices rather than defaults.
+2. What is the maximum number of characters allowed on a line of code? Present
+   80, 100, and 120 characters as illustrative choices rather than defaults.
 
-Use a concrete example when presenting the choices. With a 100-character limit,
-strict mode rejects an applicable 101-character code line; loose mode treats the
-same line as a review decision and permits it when wrapping would reduce
-readability. If documentation is included, a 101-character maintained Markdown
-or docstring line receives the same treatment; if omitted, that documentation
-line is not evaluated against the limit.
+Both selected limits are strict. The agent must follow them during implementation
+and verification even when the repository has no automated check. An applicable
+code file or code line over its limit must be corrected or covered by an explicit
+repository exception. Documentation files, documentation comments, docstrings,
+generated files, vendored code, lockfiles, snapshots, and other machine-owned
+content are excluded from both limits automatically.
+
+Use concrete examples when presenting the choices. With a 100-character limit,
+an applicable 101-character code line fails verification. With a 500-line
+limit, an applicable 501-line code file is over the limit.
 
 For the file limit, explain that a selected maximum of 500 lines makes a
 501-line maintained file over the limit. The right response is a meaningful
 split or an approved exception, never compressed or less-readable code.
 
-Always ask even when the repository already has a configured value. Present the
-discovered setting as context rather than treating it as renewed owner approval.
-Record the answers in the engineering authority and `.ai-governance/state.md`,
-and record the actual executable or manual coverage in
+Always ask both questions even when the repository already has configured
+values. Present the discovered settings as context rather than treating them as
+renewed owner approval. Record the answers and automatic exclusions in the
+engineering authority and `.ai-governance/state.md`, and record the actual
+executable coverage in
 `.ai-governance/enforcement.md`.
 
 Before every bootstrap, upgrade, or approved enforcement change, read and follow

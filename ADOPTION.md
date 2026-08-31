@@ -17,18 +17,17 @@ the workflow may modify or create it.
 
 Before bootstrap or upgrade edits begin, the adopter must answer:
 
-1. the maximum characters in one line, with 80, 100, and 120 presented as
-   illustrative choices rather than defaults;
-2. whether enforcement is strict or loose, after seeing examples of how each
-   mode treats a line over the character limit;
-3. whether documentation files, documentation comments, and docstrings are
-   included in or omitted from the character limit; and
-4. the maximum lines in one maintained file, with 300, 500, and 1,000 presented
-   as illustrative choices rather than defaults, plus the treatment of
-   generated, vendored, lock, snapshot, and other machine-owned files.
+1. What is the maximum number of lines allowed in a code file?
+2. What is the maximum number of characters allowed on a line of code?
 
-The agent must inspect and disclose existing settings, ask all four questions,
-and wait. Existing configuration is evidence, not permission to skip the choice.
+Present 300, 500, and 1,000 lines and 80, 100, and 120 characters as
+illustrative choices rather than defaults. Both limits are strict.
+Documentation files, documentation comments, docstrings, generated files,
+vendored code, lockfiles, snapshots, and other machine-owned content are
+excluded from both limits automatically.
+
+The agent must inspect and disclose existing settings, ask both questions, and
+wait. Existing configuration is evidence, not permission to skip either choice.
 
 ## 1. Copy the universal authorities
 
@@ -79,13 +78,11 @@ If the repository lacks an important check, record that as an adoption gap. Do
 not claim a command exists or a rule is enforced when it is only aspirational.
 
 For strict line length, identify the exact check and gate that fail on an
-applicable over-limit line. For loose line length, record the formatter,
-review-time guidance, or manual check without claiming a hard gate. Apply the
-user's documentation inclusion or omission consistently.
+applicable over-limit code line. Apply the automatic exclusions consistently.
 
 For maximum file length, identify the exact check or review that counts lines in
 eligible maintained files. Do not claim a hard gate when the limit is checked
-only during review. Record included files, excluded machine-owned files, and the
+only during review. Record eligible code, automatic exclusions, and the
 documented exception process.
 
 ## 5. Document actual ownership and invariants

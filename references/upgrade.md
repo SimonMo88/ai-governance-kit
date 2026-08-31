@@ -7,19 +7,15 @@ An upgrade is a merge and clarification exercise, not a template overwrite.
 
 Inspect the repository's current formatter, linter, editor, and written
 line-length and file-size settings. Present what is currently configured, then
-ask the four length questions required by `SKILL.md` and wait for the user's
-answers.
-Give concrete 80-, 100-, and 120-character examples, explain strict versus loose
-behavior with a representative passing and over-limit line, and ask whether
-documentation files, documentation comments, and docstrings are included or
-omitted. Present 300, 500, and 1,000 lines as illustrative maximum file lengths,
-explain how over-limit files should be split or excepted, and identify the
-treatment of machine-owned files. Never treat an existing setting as renewed
-owner approval.
+ask the two length questions required by `SKILL.md` and wait for the user's
+answers. Present 300, 500, and 1,000 lines and 80, 100, and 120 characters as
+illustrative choices rather than defaults. Explain that both limits are strict
+and give a representative over-limit file and line. Never treat an existing
+setting as renewed owner approval.
 
 Update the engineering authority and `.ai-governance/state.md` with the selected
-character maximum, file-line maximum, enforcement mode, documentation treatment,
-file exclusions, and exception process. Update
+character maximum, file-line maximum, strict enforcement, automatic exclusions,
+and exception process. Update
 `.ai-governance/enforcement.md` with the current executable or manual coverage.
 If the selected policy is not enforced, report the gap; the upgrade does not
 authorize changing enforcement tooling.

@@ -15,4 +15,6 @@
 - Add automated installation, command, link, and release checks.
 - Require adopters to choose both a character limit for each line and a maximum
   number of lines for each maintained file.
+- Ask only for code file and code line limits, enforce both strictly, and exclude
+  documentation and machine-owned content automatically.
 - Add a guarded maintainer script for validating and starting a GitHub release.
