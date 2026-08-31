@@ -61,3 +61,9 @@ Run governance-specific checks followed by the repository's complete gate. Repor
 the previous and new authority map, preserved local rules, removed duplication,
 unenforced policy, the version that can restore the prior governance, and any
 follow-up that requires owner judgment.
+
+An upgrade does not authorize enforcement changes. Report discovered executable
+coverage and drift, then ask: **Governance instructions are upgraded. Would you
+like to assess and improve executable enforcement now?** Run
+`assess-enforcement.md` only when the user explicitly accepts that separate
+action.

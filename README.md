@@ -6,10 +6,11 @@ human contributors. It defines how work should be understood, implemented,
 reviewed, and verified without assuming a language, framework, package manager,
 repository layout, deployment platform, frontend, or backend.
 
-It can be used in four ways:
+It can be used in five ways:
 
 - introduce AI governance to an existing repository;
 - upgrade and consolidate an existing governance setup;
+- separately assess executable coverage and improve only user-selected gaps;
 - ask an AI agent to refactor a specified folder under the adopted quality and
   domain rules;
 - ask an AI agent to review and refactor the whole repository under those rules.
@@ -31,10 +32,10 @@ tests.
 - `scopes/frontend/AGENTS.md`: optional frontend-specific instructions.
 - `scopes/backend/AGENTS.md`: optional backend-specific instructions.
 - `ADOPTION.md`: installation and customization checklist.
-- `.ai-governance/`: copyable repository-local history, rollback versions, local
-  authorities, commands, and active-state structure.
-- `SKILL.md`: repeatable AI entry point for bootstrap, upgrade, folder
-  refactoring, and whole-project refactoring workflows.
+- `.ai-governance/`: copyable repository-local history, rollback versions,
+  authority state, enforcement capability record, and drift evidence.
+- `SKILL.md`: repeatable AI entry point for bootstrap, upgrade, enforcement
+  assessment, folder refactoring, and whole-project refactoring workflows.
 - `references/`: detailed workflow instructions loaded only for the selected
   mode.
 
@@ -148,6 +149,7 @@ natural language:
 ```text
 Use ai-governance to introduce AI governance to this repository.
 Use ai-governance to upgrade the existing governance in this repository.
+Use ai-governance to assess and improve governance enforcement in this repository.
 Use ai-governance to refactor <folder> under its code-quality and domain rules.
 Use ai-governance to refactor this entire repository under its engineering-quality and domain rules. Review every eligible project-owned source, test, configuration, script, and maintained documentation file; make only justified behavior-preserving improvements; preserve public contracts and unrelated changes; validate in cohesive stages; and report remaining findings and validation limits accurately.
 ```
@@ -168,3 +170,11 @@ Every bootstrap or upgrade first creates an immutable, checksummed snapshot of
 the affected existing governance under `.ai-governance/versions/`. Reverting a
 version first snapshots the current governance, so both the upgrade and its
 reversal are recoverable without touching application code.
+
+Bootstrap and upgrade never install enforcement automatically. They report what
+is already executable and offer a separate action. That action preserves useful
+project-native tooling by default, explains coverage in plain language, starts
+with a read-only scorecard and dry run, lets the user choose individual gaps,
+and requires explicit approval before versioned changes. Replacement and removal
+need separate confirmation. Reassessment records drift and proposes no edits
+when the repository is unchanged.

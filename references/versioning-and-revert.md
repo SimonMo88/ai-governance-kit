@@ -1,7 +1,7 @@
 # Governance versioning and revert
 
-Use this workflow before every bootstrap or upgrade and whenever the user asks to
-inspect or revert governance history.
+Use this workflow before every bootstrap, upgrade, approved enforcement change,
+and whenever the user asks to inspect or revert governance history.
 
 ## Storage contract
 
@@ -34,6 +34,8 @@ replace, or create. Include:
   affected by the operation;
 - governance state or configuration files;
 - governance-specific checks, hooks, or CI definitions when they are in scope.
+- the enforcement capability record and every verification configuration,
+  program, hook, or CI file in an approved enforcement plan.
 
 Do not snapshot unrelated product specifications or implementation files merely
 because an authority links to them.
@@ -57,7 +59,7 @@ because an authority links to them.
 The manifest must contain:
 
 - version identifier and UTC creation time;
-- reason and mode: bootstrap, upgrade, or pre-revert rescue;
+- reason and mode: bootstrap, upgrade, enforcement, or pre-revert rescue;
 - repository-relative path for every governed file;
 - pre-change state: `present` or `absent`;
 - SHA-256 digest for each present file;
@@ -68,9 +70,9 @@ The manifest must contain:
 Do not include secret values, environment contents, or the contents of untracked
 files unrelated to governance.
 
-## Complete an upgrade
+## Complete an operation
 
-After bootstrap or upgrade:
+After bootstrap, upgrade, or an approved enforcement change:
 
 - update `.ai-governance/state.md` with the active version and authority map;
 - keep the pre-change version immutable;

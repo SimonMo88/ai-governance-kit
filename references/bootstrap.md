@@ -57,6 +57,12 @@ gates.
 Prefer the stack's existing native mechanisms. Do not add dependencies or replace
 working tools merely to imitate the source kit.
 
+Bootstrap does not authorize enforcement changes. Report discovered executable
+coverage and gaps, then ask: **Governance instructions are installed. Would you
+like to assess and improve executable enforcement now?** Run
+`assess-enforcement.md` only when the user explicitly accepts that separate
+action.
+
 ## Validate adoption
 
 - Search the adopted files for unresolved placeholders and source-project terms.

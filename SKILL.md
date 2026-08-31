@@ -1,6 +1,6 @@
 ---
 name: ai-governance
-description: Introduce or upgrade stack-neutral AI governance without overwriting local authority, or refactor a specified folder or an entire repository against its engineering-quality and domain rules.
+description: Introduce or upgrade stack-neutral AI governance, explicitly assess and improve executable governance enforcement, or refactor a folder or repository against its local authorities.
 ---
 
 # AI governance
@@ -11,6 +11,9 @@ Use the mode implied by the request:
   [references/bootstrap.md](references/bootstrap.md).
 - **Upgrade** improves an existing governance setup. Read
   [references/upgrade.md](references/upgrade.md).
+- **Assess and improve enforcement** inventories executable verification,
+  explains coverage, and offers separately approved improvements. Read
+  [references/assess-enforcement.md](references/assess-enforcement.md).
 - **Refactor folder** reviews and refactors a user-specified folder. Read
   [references/refactor-folder.md](references/refactor-folder.md).
 - **Refactor project** reviews and refactors all eligible project-owned files in
@@ -42,6 +45,8 @@ versions.
   that is documented but not executable.
 - Never bootstrap or upgrade active governance until its affected existing files
   have been captured and verified under `.ai-governance/versions/`.
+- Bootstrap and upgrade never add, change, replace, or remove enforcement. End
+  them by reporting its status and offering the separate assessment action.
 
 The stack-neutral template files are stored beside this skill. Adapt them to the
 target repository; do not copy placeholders into an active governance setup.

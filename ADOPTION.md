@@ -63,11 +63,19 @@ direction. Replace `docs/product-invariants.md` with approved, testable truths.
 Plans, desired architecture, and future features must not be presented as current
 authority.
 
-## 6. Add executable enforcement
+## 6. Assess executable enforcement separately
 
-Convert high-value prose rules into the stack's native enforcement mechanisms
-where practical, such as formatters, linters, compilers, architecture tests,
-schema validation, policy tests, hooks, or CI jobs.
+Bootstrap and upgrade stop after reporting enforcement coverage and offering the
+separate **Assess and improve governance enforcement** action. They do not add or
+change tooling automatically. The separate action begins with a read-only
+scorecard and mandatory dry run; the adopter selects individual gaps and must
+approve exact changes before any write.
+
+Reuse effective native checks by default. Convert selected high-value prose
+rules into the stack's native enforcement mechanisms where practical, such as
+formatters, analyzers, compilers, architecture tests, schema validation, policy
+tests, hooks, or CI jobs. Record the adopted capability map and drift evidence in
+`.ai-governance/enforcement.md`.
 
 Keep each rule aligned with its enforcement:
 
