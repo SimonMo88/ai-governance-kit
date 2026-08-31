@@ -5,12 +5,13 @@ human contributors. It defines how work should be understood, implemented,
 reviewed, and verified without assuming a language, framework, package manager,
 repository layout, deployment platform, frontend, or backend.
 
-It can be used in three ways:
+It can be used in four ways:
 
 - introduce AI governance to an existing repository;
 - upgrade and consolidate an existing governance setup;
 - ask an AI agent to refactor a specified folder under the adopted quality and
-  domain rules.
+  domain rules;
+- ask an AI agent to review and refactor the whole repository under those rules.
 
 The kit is intentionally Markdown-only. An adopting repository owns its actual
 commands and enforcement tools. This keeps the governance portable while making
@@ -31,8 +32,8 @@ tests.
 - `ADOPTION.md`: installation and customization checklist.
 - `.ai-governance/`: copyable repository-local history, rollback versions, local
   authorities, commands, and active-state structure.
-- `SKILL.md`: repeatable AI entry point for bootstrap, upgrade, and folder
-  refactoring workflows.
+- `SKILL.md`: repeatable AI entry point for bootstrap, upgrade, folder
+  refactoring, and whole-project refactoring workflows.
 - `references/`: detailed workflow instructions loaded only for the selected
   mode.
 
@@ -147,11 +148,20 @@ natural language:
 Use ai-governance to introduce AI governance to this repository.
 Use ai-governance to upgrade the existing governance in this repository.
 Use ai-governance to refactor <folder> under its code-quality and domain rules.
+Use ai-governance to refactor this entire repository under its engineering-quality and domain rules. Review every eligible project-owned source, test, configuration, script, and maintained documentation file; make only justified behavior-preserving improvements; preserve public contracts and unrelated changes; validate in cohesive stages; and report remaining findings and validation limits accurately.
 ```
 
-The folder workflow is deliberately bounded. It reviews every eligible file but
-does not force edits into healthy files or silently expand into the rest of the
-repository.
+The folder workflow is deliberately bounded to the named folder. It reviews
+every eligible file there but does not force edits into healthy files or silently
+expand into the rest of the repository.
+
+The whole-project workflow is also bounded: it builds a finite inventory of
+project-owned files, excludes dependencies and generated, vendored, cached, and
+build output, then works through cohesive ownership areas with focused
+validation. “Entire repository” means every eligible file is reviewed, not that
+every file must be changed. If the repository cannot be responsibly completed in
+one run, the agent must identify exactly what was reviewed and what remains
+instead of claiming completion.
 
 Every bootstrap or upgrade first creates an immutable, checksummed snapshot of
 the affected existing governance under `.ai-governance/versions/`. Reverting a

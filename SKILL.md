@@ -1,6 +1,6 @@
 ---
 name: ai-governance
-description: Introduce stack-neutral AI governance to an existing repository, upgrade an existing governance system without overwriting local authority, or refactor a specified folder against the repository's engineering-quality and domain rules.
+description: Introduce or upgrade stack-neutral AI governance without overwriting local authority, or refactor a specified folder or an entire repository against its engineering-quality and domain rules.
 ---
 
 # AI governance
@@ -13,6 +13,9 @@ Use the mode implied by the request:
   [references/upgrade.md](references/upgrade.md).
 - **Refactor folder** reviews and refactors a user-specified folder. Read
   [references/refactor-folder.md](references/refactor-folder.md).
+- **Refactor project** reviews and refactors all eligible project-owned files in
+  the repository. Read
+  [references/refactor-project.md](references/refactor-project.md).
 
 If the request combines modes, bootstrap or upgrade governance before using it
 to refactor code.
