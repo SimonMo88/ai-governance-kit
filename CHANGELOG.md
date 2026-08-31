@@ -17,4 +17,7 @@
   number of lines for each maintained file.
 - Ask only for code file and code line limits, enforce both strictly, and exclude
   documentation and machine-owned content automatically.
+- Add standalone file, folder, and project audits with optional comma-separated
+  extension filters, JSON exclusion, project governance preflight, mandatory
+  refactor approval, and optional independently validated batch commits.
 - Add a guarded maintainer script for validating and starting a GitHub release.

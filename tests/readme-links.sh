@@ -25,6 +25,11 @@ for relative_path in \
   references/bootstrap.md \
   references/upgrade.md \
   references/assess-enforcement.md \
+  references/audit.md \
+  references/audit-file.md \
+  references/audit-folder.md \
+  references/audit-project.md \
+  references/refactor-file.md \
   references/refactor-folder.md \
   references/refactor-project.md
 do
@@ -50,5 +55,33 @@ grep -Fq 'root `.gitignore`' "$PROJECT_ROOT/references/versioning-and-revert.md"
   printf 'Versioning workflow does not include the root .gitignore.\n' >&2
   exit 1
 }
+
+grep -Fq 'JSON excluded by policy' "$PROJECT_ROOT/references/audit.md" || {
+  printf 'Audit workflow does not preserve the JSON exclusion.\n' >&2
+  exit 1
+}
+
+grep -Fq 'whether to apply' "$PROJECT_ROOT/references/audit-project.md" || {
+  printf 'Project audit does not require governance-write approval.\n' >&2
+  exit 1
+}
+
+for refactor_workflow in \
+  references/refactor-file.md \
+  references/refactor-folder.md \
+  references/refactor-project.md
+do
+  grep -Fq 'audit before editing' "$PROJECT_ROOT/$refactor_workflow" || {
+    printf 'Refactor workflow does not require an audit: %s\n' \
+      "$refactor_workflow" >&2
+    exit 1
+  }
+done
+
+grep -Fq 'whether each successfully completed refactor batch should be committed' \
+  "$PROJECT_ROOT/references/audit.md" || {
+    printf 'Audit workflow does not ask for the batch-commit preference.\n' >&2
+    exit 1
+  }
 
 printf 'All documented file links exist.\n'

@@ -5,6 +5,13 @@ repository-wide refactor. Resolve the repository root before editing. If the
 requested scope is a folder rather than the whole repository, use
 [refactor-folder.md](refactor-folder.md).
 
+Read [audit-project.md](audit-project.md) and run its governance preflight and
+complete project audit before editing. Present the audit identifier and proposed
+stages, then ask whether the user authorizes the refactor and whether each
+successful stage should be committed. Governance answers and governance-write
+approval never imply source-refactor approval. Revalidate the audited state
+before the first application-source write.
+
 ## Scope contract
 
 - Recursively inventory and review every eligible project-owned source, test,
@@ -95,6 +102,11 @@ After each stage:
 3. review the diff for contract changes and unrelated edits;
 4. record fixed findings, deferred findings, and validation results before
    proceeding.
+
+Follow the commit preference recorded after the audit. When enabled, stage only
+the stage's task-owned files or hunks, run staged verification when defined,
+commit the validated stage, and verify its contents. Otherwise leave all work
+uncommitted for the user.
 
 If the repository is too large to review responsibly in the available run,
 finish the current coherent stage and report exact completed and remaining

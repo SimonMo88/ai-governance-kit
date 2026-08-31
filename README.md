@@ -139,6 +139,30 @@ $ai-governance assess enforcement
 The assessment is read-only first. You choose which gaps are worth improving
 before anything changes.
 
+### 📊 Audit before changing code
+
+Measure one file, one folder, or the complete project and preview what a governed
+refactor would do:
+
+```text
+$ai-governance audit file src/payments/service.ts
+$ai-governance audit folder src/payments --extensions .ts,.tsx
+$ai-governance audit project
+```
+
+Audits separate exact measurements from tool output and AI review, list JSON and
+other excluded files, and make application-source changes only after a later
+refactor is explicitly approved. Project audits pause for unresolved active
+governance and preview any Markdown updates needed to record the owner's answers.
+
+### 🧩 Refactor one file
+
+Audit and improve one file without silently expanding the target:
+
+```text
+$ai-governance refactor file src/payments/service.ts
+```
+
 ### 🧹 Refactor one folder
 
 Improve how code is organised in a bounded part of the project:
@@ -146,6 +170,9 @@ Improve how code is organised in a bounded part of the project:
 ```text
 $ai-governance refactor folder src/payments
 ```
+
+The audit runs first. You approve the proposed batches and choose whether each
+successful batch should be committed separately.
 
 ### 🏗️ Refactor the whole project
 
@@ -155,8 +182,8 @@ Review and improve all eligible project-owned files:
 $ai-governance refactor project
 ```
 
-Downloaded, generated, and temporary files are excluded. This is the big one;
-it can take considerably longer than a folder review. Pack snacks. 🍿
+JSON, downloaded, generated, and temporary files are excluded. This is the big
+one; it can take considerably longer than a folder review. Pack snacks. 🍿
 
 ---
 

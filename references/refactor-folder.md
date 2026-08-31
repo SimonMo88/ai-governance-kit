@@ -1,7 +1,10 @@
 # Refactor a folder under repository governance
 
 Use this mode only when the user supplies or clearly identifies a target folder.
-Resolve its exact path before editing.
+Resolve its exact path, read [audit-folder.md](audit-folder.md), and run that
+audit before editing. Present its identifier and proposed batches, then ask
+whether the user authorizes the refactor and whether successful batches should
+be committed. Revalidate the audited state before the first write.
 
 ## Scope contract
 
@@ -68,7 +71,9 @@ Do not compress code, split files arbitrarily, create generic dumping grounds, o
 introduce abstractions merely to satisfy metrics.
 
 After each batch, format only changed files and run focused checks. Review the
-diff before continuing so later batches do not hide regressions.
+diff before continuing so later batches do not hide regressions. Follow the
+commit preference recorded after the audit: either commit each independently
+validated batch or leave all refactor work uncommitted for the user.
 
 ## Completion criteria
 

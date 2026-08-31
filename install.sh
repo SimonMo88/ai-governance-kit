@@ -141,7 +141,16 @@ package_dir="$temporary_dir/package"
 mkdir -p "$package_dir"
 tar -xzf "$archive_path" -C "$package_dir" --strip-components=1
 
-for required_file in VERSION SKILL.md install.sh bin/ai-governance references/bootstrap.md; do
+for required_file in \
+  VERSION \
+  SKILL.md \
+  install.sh \
+  bin/ai-governance \
+  references/bootstrap.md \
+  references/audit.md \
+  references/audit-project.md \
+  references/refactor-file.md
+do
   [ -r "$package_dir/$required_file" ] || fail "the release is incomplete: missing $required_file"
 done
 
@@ -161,7 +170,16 @@ if [ ! -d "$version_dir" ]; then
   mv "$staged_version" "$version_dir"
 fi
 
-for required_file in VERSION SKILL.md install.sh bin/ai-governance references/bootstrap.md; do
+for required_file in \
+  VERSION \
+  SKILL.md \
+  install.sh \
+  bin/ai-governance \
+  references/bootstrap.md \
+  references/audit.md \
+  references/audit-project.md \
+  references/refactor-file.md
+do
   [ -r "$version_dir/$required_file" ] || fail "the installed version is incomplete: missing $required_file"
 done
 

@@ -95,6 +95,11 @@ show_doctor() {
   check_required_file "references/bootstrap.md"
   check_required_file "references/upgrade.md"
   check_required_file "references/assess-enforcement.md"
+  check_required_file "references/audit.md"
+  check_required_file "references/audit-file.md"
+  check_required_file "references/audit-folder.md"
+  check_required_file "references/audit-project.md"
+  check_required_file "references/refactor-file.md"
   check_required_file "references/refactor-folder.md"
   check_required_file "references/refactor-project.md"
   check_required_file "references/manage-installation.md"
@@ -213,21 +218,106 @@ uninstall_managed_files() {
   say "AI Governance Kit was removed."
 }
 
-show_prompt() {
-  prompt_request=$*
-  case "$prompt_request" in
-    "bootstrap") say 'Use $ai-governance to introduce AI governance to this repository.' ;;
-    "upgrade") say 'Use $ai-governance to upgrade the existing governance in this repository.' ;;
-    "assess enforcement") say 'Use $ai-governance to assess executable governance enforcement in this repository.' ;;
-    "refactor project")
-      say 'Use $ai-governance to refactor this entire repository under its local engineering and domain rules.'
+normalize_extensions() {
+  raw_extensions=$1
+  [ -n "$raw_extensions" ] || fail "--extensions needs a comma-separated value"
+  case "$raw_extensions" in
+    ,*|*,|*,,*) fail "--extensions contains an empty extension" ;;
+  esac
+  normalized_extensions=
+  old_ifs=$IFS
+  IFS=,
+  for raw_extension in $raw_extensions; do
+    extension=$(printf '%s' "$raw_extension" |
+      sed 's/^[[:space:]]*//;s/[[:space:]]*$//' |
+      tr '[:upper:]' '[:lower:]')
+    [ -n "$extension" ] || fail "--extensions contains an empty extension"
+    case "$extension" in
+      .*) ;;
+      *) extension=.$extension ;;
+    esac
+    [ "$extension" != "." ] || fail "invalid extension '$raw_extension'"
+    case "$extension" in
+      *[!a-z0-9._+-]*) fail "invalid extension '$raw_extension'" ;;
+    esac
+    case ",$normalized_extensions," in
+      *",$extension,"*) ;;
+      *)
+        if [ -n "$normalized_extensions" ]; then
+          normalized_extensions="$normalized_extensions,$extension"
+        else
+          normalized_extensions=$extension
+        fi
+        ;;
+    esac
+  done
+  IFS=$old_ifs
+  printf '%s\n' "$normalized_extensions"
+}
+
+show_scoped_prompt() {
+  action=$1
+  scope=$2
+  shift 2
+
+  case "$scope" in
+    project) target= ;;
+    file|folder)
+      [ "$#" -gt 0 ] || fail "$action $scope needs a path"
+      target=$1
+      [ -n "$target" ] || fail "$action $scope needs a path"
+      case "$target" in --*) fail "$action $scope needs a path before options" ;; esac
+      shift
       ;;
-    "refactor folder "*)
-      folder=${prompt_request#refactor folder }
-      say "Use \$ai-governance to refactor only $folder under this repository's local engineering and domain rules."
+    *) fail "$action needs file <path>, folder <path>, or project" ;;
+  esac
+
+  extension_clause=
+  if [ "$#" -gt 0 ]; then
+    [ "$1" = "--extensions" ] || fail "unknown option '$1'"
+    [ "$#" -eq 2 ] ||
+      fail "--extensions must be final and needs one comma-separated value"
+    normalized_extensions=$(normalize_extensions "$2")
+    extension_clause=" --extensions $normalized_extensions"
+  fi
+
+  request="$action $scope"
+  [ -z "$target" ] || request="$request $target"
+  request="$request$extension_clause"
+
+  if [ "$action" = "audit" ]; then
+    say "Use \$ai-governance to $request."
+  else
+    say "Use \$ai-governance to $request under this repository's local rules."
+    say "Run the matching audit first and ask for approval before editing."
+  fi
+}
+
+show_prompt() {
+  prompt_mode=${1:-}
+  case "$prompt_mode" in
+    bootstrap)
+      [ "$#" -eq 1 ] || fail "prompt bootstrap takes no arguments"
+      say 'Use $ai-governance to introduce AI governance to this repository.'
+      ;;
+    upgrade)
+      [ "$#" -eq 1 ] || fail "prompt upgrade takes no arguments"
+      say 'Use $ai-governance to upgrade the existing governance in this repository.'
+      ;;
+    assess)
+      [ "${2:-}" = "enforcement" ] && [ "$#" -eq 2 ] ||
+        fail "try: prompt assess enforcement"
+      say 'Use $ai-governance to assess executable governance enforcement in this repository.'
+      ;;
+    audit|refactor)
+      [ "$#" -ge 2 ] ||
+        fail "$prompt_mode needs file <path>, folder <path>, or project"
+      action=$1
+      shift
+      show_scoped_prompt "$action" "$@"
       ;;
     *)
-      fail "try: prompt bootstrap, upgrade, assess enforcement, refactor project, or refactor folder <path>"
+      fail "try: prompt bootstrap, upgrade, assess enforcement, audit or refactor"
       ;;
   esac
 }
@@ -248,8 +338,12 @@ Prepare a prompt for Codex or Claude:
   ai-governance prompt bootstrap
   ai-governance prompt upgrade
   ai-governance prompt assess enforcement
-  ai-governance prompt refactor folder <path>
-  ai-governance prompt refactor project
+  ai-governance prompt audit file <path> [--extensions .ts,.tsx]
+  ai-governance prompt audit folder <path> [--extensions .ts,.tsx]
+  ai-governance prompt audit project [--extensions .ts,.tsx]
+  ai-governance prompt refactor file <path> [--extensions .ts,.tsx]
+  ai-governance prompt refactor folder <path> [--extensions .ts,.tsx]
+  ai-governance prompt refactor project [--extensions .ts,.tsx]
 EOF
 }
 
@@ -267,7 +361,7 @@ case "$command" in
     ;;
   uninstall) uninstall_managed_files ;;
   prompt) show_prompt "$@" ;;
-  refactor|bootstrap|upgrade|assess)
+  audit|refactor|bootstrap|upgrade|assess)
     say "'$PROGRAM_NAME $command' does not change a project from the terminal."
     say "Run '$PROGRAM_NAME prompt $command $*' to get a prompt for Codex or Claude."
     ;;

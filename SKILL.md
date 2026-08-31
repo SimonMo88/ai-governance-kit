@@ -1,6 +1,8 @@
 ---
 name: ai-governance
-description: Manage AI Governance Kit, introduce or upgrade governance, assess enforcement, or refactor code under local authorities.
+description: >-
+  Manage AI Governance Kit, introduce or upgrade governance, assess enforcement,
+  audit a file, folder, or project, or refactor code under local authorities.
 ---
 
 # AI governance
@@ -17,6 +19,18 @@ Use the mode implied by the request:
 - **Assess and improve enforcement** inventories executable verification,
   explains coverage, and offers separately approved improvements. Read
   [references/assess-enforcement.md](references/assess-enforcement.md).
+- **Audit file** measures and reviews one user-specified file and previews a
+  refactor without changing application source. Read
+  [references/audit-file.md](references/audit-file.md).
+- **Audit folder** measures and reviews one user-specified folder and previews a
+  refactor without changing application source. Read
+  [references/audit-folder.md](references/audit-folder.md).
+- **Audit project** measures and reviews all eligible project-owned files after
+  resolving active governance placeholders. Read
+  [references/audit-project.md](references/audit-project.md).
+- **Refactor file** audits and, after explicit approval, refactors one
+  user-specified file. Read
+  [references/refactor-file.md](references/refactor-file.md).
 - **Refactor folder** reviews and refactors a user-specified folder. Read
   [references/refactor-folder.md](references/refactor-folder.md).
 - **Refactor project** reviews and refactors all eligible project-owned files in
@@ -27,10 +41,17 @@ If the request combines modes, bootstrap or upgrade governance before using it
 to refactor code.
 
 Recognize `status`, `doctor`, `update`, `rollback`, `repair`, and `uninstall` as
-installation-management requests. Recognize `refactor folder <path>` and
-`refactor project` as the bounded refactoring modes above. If the user requests
-only `refactor`, ask whether they mean one folder or the entire repository before
-editing files.
+installation-management requests. Recognize `audit file <path>`, `audit folder
+<path>`, `audit project`, `refactor file <path>`, `refactor folder <path>`, and
+`refactor project` as the bounded modes above. Each accepts an optional
+`--extensions` argument with comma-separated extensions. If the user requests
+only `audit` or `refactor`, ask whether they mean one file, one folder, or the
+entire repository before proceeding.
+
+Every refactor mode must run its matching audit first, show the proposed batches,
+ask for explicit refactor approval, and ask whether successful batches should be
+committed. Do not treat governance clarification or governance-write approval as
+source-refactor approval.
 
 ## Required line and file length decisions
 

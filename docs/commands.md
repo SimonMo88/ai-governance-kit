@@ -46,6 +46,22 @@ Prints a prompt that can be copied into Codex or Claude:
 ai-governance prompt bootstrap
 ai-governance prompt upgrade
 ai-governance prompt assess enforcement
+ai-governance prompt audit file src/payments/service.ts
+ai-governance prompt audit folder src/payments
+ai-governance prompt audit project
+ai-governance prompt refactor file src/payments/service.ts
 ai-governance prompt refactor folder src/payments
 ai-governance prompt refactor project
 ```
+
+Audit and refactor prompts accept an optional comma-separated extension filter:
+
+```bash
+ai-governance prompt audit project --extensions .ts,.tsx
+ai-governance prompt refactor folder src --extensions ts,tsx
+```
+
+The command normalizes leading dots, whitespace, case, and duplicates. JSON is
+still excluded by the audit workflow even when `.json` is requested. The
+terminal helper prepares prompts only; the agent performs the audit and asks for
+the required governance, refactor, and commit approvals.

@@ -90,7 +90,54 @@ doctor_output=$("$BIN_DIR/ai-governance" doctor)
 assert_contains "$doctor_output" "Installation: healthy"
 
 prompt_output=$("$BIN_DIR/ai-governance" prompt refactor folder src/payments)
-assert_contains "$prompt_output" "refactor only src/payments"
+assert_contains "$prompt_output" "refactor folder src/payments"
+
+audit_file_output=$("$BIN_DIR/ai-governance" prompt audit file src/payments/service.ts)
+assert_contains "$audit_file_output" "audit file src/payments/service.ts"
+
+audit_folder_output=$("$BIN_DIR/ai-governance" prompt audit folder src/payments \
+  --extensions ' TS, .tsx,ts ')
+assert_contains "$audit_folder_output" "--extensions .ts,.tsx"
+
+audit_project_output=$("$BIN_DIR/ai-governance" prompt audit project --extensions .ts,.json)
+assert_contains "$audit_project_output" "audit project --extensions .ts,.json"
+
+refactor_file_output=$("$BIN_DIR/ai-governance" prompt refactor file \
+  src/payments/service.ts --extensions ts)
+assert_contains "$refactor_file_output" "Run the matching audit first"
+
+refactor_project_output=$("$BIN_DIR/ai-governance" prompt refactor project)
+assert_contains "$refactor_project_output" "ask for approval before editing"
+
+if "$BIN_DIR/ai-governance" prompt audit file \
+  > "$TEST_ROOT/missing-audit-path.log" 2>&1
+then
+  fail "audit file accepted a missing path"
+fi
+if "$BIN_DIR/ai-governance" prompt audit project --extensions '.ts,' \
+  > "$TEST_ROOT/empty-extension.log" 2>&1
+then
+  fail "extension parsing accepted an empty entry"
+fi
+if "$BIN_DIR/ai-governance" prompt audit project --extensions '.ts,/json' \
+  > "$TEST_ROOT/invalid-extension.log" 2>&1
+then
+  fail "extension parsing accepted an invalid value"
+fi
+if "$BIN_DIR/ai-governance" prompt audit project --extensions '.' \
+  > "$TEST_ROOT/dot-extension.log" 2>&1
+then
+  fail "extension parsing accepted a bare dot"
+fi
+if "$BIN_DIR/ai-governance" prompt audit project --unknown value \
+  > "$TEST_ROOT/unknown-option.log" 2>&1
+then
+  fail "audit project accepted an unknown option"
+fi
+
+help_output=$("$BIN_DIR/ai-governance" help)
+assert_contains "$help_output" "prompt audit file <path>"
+assert_contains "$help_output" "prompt refactor file <path>"
 
 rm -f "$CODEX_DIR/ai-governance"
 ln -s "$DATA_DIR/missing" "$CODEX_DIR/ai-governance"
