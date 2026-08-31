@@ -21,6 +21,7 @@ jobs:
           sh -n install.sh bin/ai-governance tests/*.sh scripts/release.sh
           sh tests/readme-links.sh
           sh tests/install-and-cli.sh
+          sh tests/release.sh
       - name: Build release files
         run: |
           mkdir dist

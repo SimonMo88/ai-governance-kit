@@ -14,6 +14,8 @@ DATA_DIR="$TEST_ROOT/data"
 BIN_DIR="$TEST_ROOT/bin"
 CODEX_DIR="$TEST_ROOT/codex"
 CLAUDE_DIR="$TEST_ROOT/claude"
+CURRENT_VERSION=$(sed -n '1p' "$PROJECT_ROOT/VERSION")
+UPDATED_VERSION=$(awk -F. '{ print $1 "." $2 "." $3 + 1 }' "$PROJECT_ROOT/VERSION")
 
 fail() {
   printf 'FAIL: %s\n' "$*" >&2
@@ -80,7 +82,7 @@ assert_contains "$install_output" "installed successfully"
 [ -r "$CLAUDE_DIR/ai-governance/SKILL.md" ] || fail "Claude skill link is incomplete"
 
 status_output=$("$BIN_DIR/ai-governance" status)
-assert_contains "$status_output" "AI Governance Kit v0.1.0"
+assert_contains "$status_output" "AI Governance Kit v$CURRENT_VERSION"
 assert_contains "$status_output" "Codex: installed"
 assert_contains "$status_output" "Claude Code: installed"
 
@@ -98,9 +100,9 @@ fi
 "$BIN_DIR/ai-governance" repair --target codex >/dev/null
 [ -r "$CODEX_DIR/ai-governance/SKILL.md" ] || fail "repair did not restore the Codex link"
 
-printf '0.2.0\n' > "$PACKAGE_ROOT/VERSION"
-UPDATED_ARCHIVE="$TEST_ROOT/ai-governance-kit-0.2.0.tar.gz"
-UPDATED_CHECKSUM="$TEST_ROOT/ai-governance-kit-0.2.0.tar.gz.sha256"
+printf '%s\n' "$UPDATED_VERSION" > "$PACKAGE_ROOT/VERSION"
+UPDATED_ARCHIVE="$TEST_ROOT/ai-governance-kit-$UPDATED_VERSION.tar.gz"
+UPDATED_CHECKSUM="$TEST_ROOT/ai-governance-kit-$UPDATED_VERSION.tar.gz.sha256"
 tar -czf "$UPDATED_ARCHIVE" -C "$PACKAGE_PARENT" ai-governance-kit
 shasum -a 256 "$UPDATED_ARCHIVE" > "$UPDATED_CHECKSUM"
 AI_GOVERNANCE_ARCHIVE="$UPDATED_ARCHIVE" \
@@ -108,10 +110,10 @@ AI_GOVERNANCE_ARCHIVE="$UPDATED_ARCHIVE" \
   "$BIN_DIR/ai-governance" update >/dev/null
 
 updated_status=$("$BIN_DIR/ai-governance" status)
-assert_contains "$updated_status" "AI Governance Kit v0.2.0"
+assert_contains "$updated_status" "AI Governance Kit v$UPDATED_VERSION"
 "$BIN_DIR/ai-governance" rollback >/dev/null
 rolled_back_status=$("$BIN_DIR/ai-governance" status)
-assert_contains "$rolled_back_status" "AI Governance Kit v0.1.0"
+assert_contains "$rolled_back_status" "AI Governance Kit v$CURRENT_VERSION"
 
 printf 'yes\n' | "$BIN_DIR/ai-governance" uninstall >/dev/null
 [ ! -e "$DATA_DIR" ] || fail "uninstall left the managed data directory behind"

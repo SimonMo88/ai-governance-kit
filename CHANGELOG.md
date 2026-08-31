@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Make the release script suggest patch, minor, and major versions while allowing
+  an exact version, update and commit `VERSION`, push `main`, and start a GitHub
+  release with generated release notes.
 - Make bootstrap and upgrade add `/.ai-governance/` to the adopting repository's
   root `.gitignore`, creating the file when needed.
 - Add a managed installer and terminal command for status, diagnosis, updates,

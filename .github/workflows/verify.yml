@@ -19,3 +19,5 @@ jobs:
         run: sh tests/readme-links.sh
       - name: Test installer and CLI
         run: sh tests/install-and-cli.sh
+      - name: Test release workflow
+        run: sh tests/release.sh
