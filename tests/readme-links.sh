@@ -6,6 +6,7 @@ PROJECT_ROOT=$(CDPATH= cd -- "$(dirname "$0")/.." && pwd)
 
 for relative_path in \
   assets/ai-governance-kit-banner.jpg \
+  assets/governance-chaos.png \
   docs/installation.md \
   docs/commands.md \
   docs/workflows.md \

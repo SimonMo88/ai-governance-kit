@@ -1,147 +1,215 @@
 # AI Governance Kit
 
+### Give your coding agents the manual before they start pressing buttons.
+
 ![AI Governance Kit](assets/ai-governance-kit-banner.jpg)
 
-AI Governance Kit helps Codex and Claude understand how your project should be
-changed. It gives them clear rules about how your project works, what must not
-break, and how changes should be checked.
+**Clear project rules. Smaller files. Honest checks. Fewer robot-shaped surprises.**
 
-## Why use it?
+[Install](#-install-in-one-command) · [Meet the kit](#-what-the-kit-teaches-your-agent) · [Use it](#-pick-your-mission) · [Get help](#-more-help-less-panic)
 
-Without clear guidance, an AI agent may misunderstand your project, follow the
-wrong patterns, or say work is finished without checking it properly.
+---
 
-It may also keep adding code to the same file until that file grows beyond 2,000
-lines. Files this large are difficult for people to understand and take the AI
-longer to read and change. That can slow down future work, fill up you agents context and make mistakes more likely.
+## 🤖 Your AI agent is clever. Your project is complicated.
 
-AI Governance Kit encourages smaller, focused files and gives the agent one
-reliable place to learn how your project should be handled.
+Without clear guidance, a coding agent has to guess how your project works.
+Sometimes it guesses brilliantly. Sometimes it confidently builds a 2,000-line
+mega-file, follows the wrong pattern, skips the important check, and announces:
+_“Done!”_
 
-## What will I get?
+![A cheerful coding robot creates a chaotic tower of code blocks](assets/governance-chaos.png)
 
-Your project will gain clear instructions that tell AI coding agents:
+That is not because the agent is useless. It is because your project's most
+important rules are scattered across code, documentation, tooling, and human
+memory.
 
-- which project documents to trust;
-- what user behaviour must remain unchanged;
-- how different parts of the project fit together;
-- how changes should be written and checked;
-- when your approval is required;
-- how to report unfinished or uncertain work honestly.
+**AI Governance Kit gives the agent one reliable map before it starts moving
+the furniture.**
 
-You can also ask the agent to review and improve one folder or your whole
-project.
+It helps Codex and Claude understand:
 
-## Before you start
+- 🧭 which project documents are authoritative;
+- 🧱 how the different parts of your project fit together;
+- ❤️ what user behaviour must never accidentally break;
+- ✍️ how changes should be written and organised;
+- 🧪 which checks must run before work is called complete;
+- 🙋 when your approval is required; and
+- 🚨 how to report unfinished or uncertain work honestly.
 
-Commands beginning with `ai-governance` go in your computer's terminal.
-Commands beginning with `$ai-governance` go in your conversation with Codex.
-For Claude Code, use `/ai-governance` instead.
+> **The goal:** less context wasted rediscovering your project, fewer giant
+> files, and fewer “technically it passed one test” victory laps.
 
-Installation adds the kit to your computer. It does not change any of your
-projects. The simple installer supports macOS and Linux.
+---
 
-## Install
+## ⚡ Install in one command
 
-Run this in your terminal:
+The installer supports macOS and Linux. Paste this into your terminal:
 
 ```bash
-# Download and install the newest tested version for Codex and Claude Code.
 curl -fsSL https://github.com/SimonMo88/ai-governance-kit/releases/latest/download/install.sh | sh
 ```
 
-The installer will tell you what it installed and what to do next. See the
-[installation guide](docs/installation.md) for other options and Windows setup.
+That installs the newest tested version for **Codex** and **Claude Code**. It
+does not change any of your projects yet. No surprise renovations. 🛠️
 
-## Check the installation
+Then check everything arrived safely:
 
 ```bash
-# Show the installed version and whether Codex and Claude Code can find it.
 ai-governance status
-
-# Find installation problems without changing anything.
 ai-governance doctor
 ```
 
-## Keep it updated
+Need Windows setup or another installation method? Visit the
+[installation guide](docs/installation.md).
 
-```bash
-# Install the newest tested version without changing your projects.
-ai-governance update
+### Terminal command or AI command?
 
-# Return to the version you had before the last update.
-ai-governance rollback
-```
+- `ai-governance ...` goes in your computer's **terminal**.
+- `$ai-governance ...` goes in your conversation with **Codex**.
+- `/ai-governance ...` goes in **Claude Code**.
 
-## Fix or remove it
+---
 
-Run `ai-governance doctor` first. It will explain the problem and give you the
-right repair command.
+## 🧰 What the kit teaches your agent
 
-```bash
-# Repair the Codex installation after doctor reports a broken link.
-ai-governance repair --target codex
+### 🗺️ A map of the project
 
-# Show what will be removed and ask before uninstalling the kit.
-ai-governance uninstall
-```
+The agent learns which instructions to trust, where responsibilities live, and
+which documents own architecture, testing, security, and product behaviour.
 
-## Use it in Codex or Claude
+### 🧩 Boundaries that make sense
 
-`status` and `doctor` only inspect the installation. `bootstrap`, `upgrade`, and
-`refactor` can change project files. Review those changes before committing
-them.
+Instead of pouring every new idea into the nearest file, the agent gets guidance
+on ownership, dependencies, file size, and when code should be split.
 
-Add AI guidance to a project that does not have it yet:
+### 🛡️ Rules for the things that must not break
+
+Important product and operational behaviour becomes explicit. The agent knows
+which invariants to preserve and who can approve an intentional exception.
+
+### ✅ A real definition of “done”
+
+The kit connects written expectations to the checks your repository actually
+has. Missing enforcement stays visible instead of being promoted to imaginary
+green ticks.
+
+### ⏪ Local governance history
+
+Bootstrap and upgrade keep recoverable, repository-local history under
+`.ai-governance/`. The folder is ignored by Git, so it does not clutter your
+commits.
+
+---
+
+## 🎮 Pick your mission
+
+Use these prompts inside Codex. In Claude Code, replace `$ai-governance` with
+`/ai-governance`.
+
+### 🌱 Start fresh
+
+Add governance to a project that does not have it yet:
 
 ```text
 $ai-governance bootstrap
 ```
 
-Improve the AI guidance already in a project:
+The agent inspects your repository, asks you about the policies that need owner
+judgement, and builds guidance around the project you actually have.
+
+### 🔧 Upgrade existing guidance
+
+Improve and clarify governance already living in a project:
 
 ```text
 $ai-governance upgrade
 ```
 
-Check whether the project's written rules are checked automatically:
+Stronger local rules are preserved. Duplicate or contradictory guidance is
+carefully untangled instead of flattened by a template steamroller.
+
+### 🔍 Find the “trust me, bro” checks
+
+Compare written rules with what your tooling really enforces:
 
 ```text
 $ai-governance assess enforcement
 ```
 
-Improve how code is organised in one folder without changing the entire project:
+The assessment is read-only first. You choose which gaps are worth improving
+before anything changes.
+
+### 🧹 Refactor one folder
+
+Improve how code is organised in a bounded part of the project:
 
 ```text
 $ai-governance refactor folder src/payments
 ```
 
-Review and improve the entire project. Downloaded, generated, and
-temporary files are excluded. This can take much longer than reviewing one
-folder:
+### 🏗️ Refactor the whole project
+
+Review and improve all eligible project-owned files:
 
 ```text
 $ai-governance refactor project
 ```
 
-In Claude Code, replace `$ai-governance` with `/ai-governance` in these examples.
+Downloaded, generated, and temporary files are excluded. This is the big one;
+it can take considerably longer than a folder review. Pack snacks. 🍿
 
-## Manage it from an AI conversation
+---
 
-You can also ask the skill to check or manage its installation:
+## 🔩 Keep the kit healthy
 
-- `$ai-governance status` — show the installed version and agent connections.
-- `$ai-governance doctor` — find problems without changing anything.
-- `$ai-governance update` — install the newest tested version.
-- `$ai-governance rollback` — return to the version used before the update.
-- `$ai-governance repair` — fix a problem found by `doctor`.
-- `$ai-governance uninstall` — show what will be removed and ask first.
+<details>
+<summary><strong>Check, update, repair, roll back, or uninstall</strong></summary>
 
-The agent will explain any change and follow its normal approval rules. If you
-run `ai-governance refactor` in a terminal, it will give you the right AI prompt;
-it will not change your project.
+### Check the installation
 
-## More help
+```bash
+ai-governance status
+ai-governance doctor
+```
+
+### Update or roll back
+
+```bash
+ai-governance update
+ai-governance rollback
+```
+
+### Repair or uninstall
+
+Run `ai-governance doctor` first. It will explain the problem and provide the
+appropriate repair command.
+
+```bash
+ai-governance repair --target codex
+ai-governance uninstall
+```
+
+You can also use `$ai-governance status`, `doctor`, `update`, `rollback`,
+`repair`, or `uninstall` in a Codex conversation. The agent will explain changes
+and follow its normal approval rules.
+
+</details>
+
+---
+
+## 🧠 A few reassuring facts
+
+- Installing the kit changes **your computer's agent setup**, not your projects.
+- Bootstrap, upgrade, and refactor can change project files; review them before
+  committing.
+- Status and doctor are read-only.
+- Running a refactor command in the terminal prints the appropriate AI prompt;
+  it does not secretly refactor your project behind the curtain.
+- Governance adapts to the repository. Your project remains the authority.
+
+---
+
+## 🆘 More help, less panic
 
 - [Installation and updates](docs/installation.md)
 - [All terminal commands](docs/commands.md)
@@ -149,3 +217,5 @@ it will not change your project.
 - [Troubleshooting](docs/troubleshooting.md)
 - [What gets added to a project](ADOPTION.md)
 - [How maintainers publish a release](docs/releasing.md)
+
+### Build boldly. Check properly. Let the tiny robots read the manual. 🤖✨
