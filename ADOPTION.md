@@ -8,6 +8,13 @@ Before changing existing governance, follow
 repository, snapshot every affected governance file, record absent files, and
 verify the snapshot manifest and digests.
 
+Bootstrap and upgrade must also ensure the adopting repository's root
+`.gitignore` ignores `/.ai-governance/`. Create the root `.gitignore` when it is
+absent. Preserve an existing effective rule without duplicating it; otherwise
+append the root-anchored rule and verify it with Git's ignore checking when Git
+is available. Include the root `.gitignore` in the pre-change version because
+the workflow may modify or create it.
+
 Before bootstrap or upgrade edits begin, the adopter must answer:
 
 1. the maximum characters in one line, with 80, 100, and 120 presented as
@@ -131,5 +138,6 @@ templates to silently override repository-owned policy.
 
 Complete `.ai-governance/state.md` in the adopting repository. Use that record
 during upgrades to compare capabilities, locate immutable pre-change versions,
-and preserve local decisions. It is provenance, not a mechanism for the template
-to own local policy.
+and preserve local decisions. The root `.gitignore` keeps this local history out
+of source control. It is provenance, not a mechanism for the template to own
+local policy.

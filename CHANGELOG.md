@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Make bootstrap and upgrade add `/.ai-governance/` to the adopting repository's
+  root `.gitignore`, creating the file when needed.
 - Add a managed installer and terminal command for status, diagnosis, updates,
   rollback, repair, uninstall, and prompt generation.
 - Add matching installation-management workflows for Codex and Claude Code.

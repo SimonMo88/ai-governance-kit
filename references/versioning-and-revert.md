@@ -29,6 +29,8 @@ Before editing, identify every governance file the operation may modify, move,
 replace, or create. Include:
 
 - root and scoped agent instructions;
+- the root `.gitignore` when bootstrap or upgrade may add the
+  `/.ai-governance/` rule;
 - AI context routers;
 - engineering-quality, testing, security, architecture, and invariant authorities
   affected by the operation;
@@ -111,6 +113,7 @@ version.
 ## Git interaction
 
 Governance history complements Git; it does not replace it. Do not create commits,
-branches, tags, or stashes unless requested. Keep `.ai-governance` in source
-control by default so installations and upgrades are reviewable, unless the
-repository owner explicitly chooses local-only history.
+branches, tags, or stashes unless requested. Bootstrap and upgrade must keep
+`.ai-governance` local by ensuring the adopting repository's root `.gitignore`
+ignores `/.ai-governance/`. Review active governance changes in their normal
+source files; `.ai-governance` stores local version and provenance data only.

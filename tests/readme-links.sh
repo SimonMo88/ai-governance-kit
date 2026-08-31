@@ -33,4 +33,21 @@ do
   }
 done
 
+for workflow_file in \
+  SKILL.md \
+  ADOPTION.md \
+  references/bootstrap.md \
+  references/upgrade.md
+do
+  grep -Fq '/.ai-governance/' "$PROJECT_ROOT/$workflow_file" || {
+    printf 'Missing root .ai-governance ignore rule: %s\n' "$workflow_file" >&2
+    exit 1
+  }
+done
+
+grep -Fq 'root `.gitignore`' "$PROJECT_ROOT/references/versioning-and-revert.md" || {
+  printf 'Versioning workflow does not include the root .gitignore.\n' >&2
+  exit 1
+}
+
 printf 'All documented file links exist.\n'

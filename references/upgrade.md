@@ -27,6 +27,19 @@ authorize changing enforcement tooling.
 Before editing active governance, create and verify the pre-change version
 required by `versioning-and-revert.md`.
 
+## Keep local governance history out of Git
+
+Ensure the adopting repository's root `.gitignore` ignores
+`/.ai-governance/`. If the root `.gitignore` is absent, create it. If an
+existing effective rule already ignores the root `.ai-governance` folder, keep
+that rule and do not add a duplicate. Otherwise append the root-anchored
+`/.ai-governance/` rule while preserving the file's existing content and line
+ending style.
+
+Treat the root `.gitignore` as an affected governance file for the pre-change
+version. Verify the result with Git's ignore checking when Git is available;
+otherwise inspect the final root rule directly and report that limitation.
+
 ## Establish the baseline
 
 Inventory:
@@ -80,6 +93,8 @@ the capability clearly.
 Check links, paths, command names, scope discovery, and unresolved placeholders.
 Confirm the character-limit and file-line-limit decisions agree across the
 engineering authority, state, and enforcement record.
+Confirm the root `.gitignore` exists and ignores `/.ai-governance/` without a
+duplicate rule.
 Run governance-specific checks followed by the repository's complete gate. Report
 the previous and new authority map, preserved local rules, removed duplication,
 unenforced policy, the version that can restore the prior governance, and any

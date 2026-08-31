@@ -78,6 +78,11 @@ Before every bootstrap, upgrade, or approved enforcement change, read and follow
 the same reference when the user asks to list, inspect, or revert governance
 versions.
 
+Every bootstrap and upgrade must keep its local governance history out of source
+control. Ensure the adopting repository's root `.gitignore` ignores
+`/.ai-governance/`. Create the root `.gitignore` when it does not exist, and do
+not add a duplicate rule when an existing rule already ignores that root folder.
+
 ## Shared constraints
 
 - Treat the target repository as authoritative about its product, architecture,

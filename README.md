@@ -13,8 +13,7 @@ wrong patterns, or say work is finished without checking it properly.
 
 It may also keep adding code to the same file until that file grows beyond 2,000
 lines. Files this large are difficult for people to understand and take the AI
-longer to read and change. That can slow down future work and make mistakes more
-likely.
+longer to read and change. That can slow down future work, fill up you agents context and make mistakes more likely.
 
 AI Governance Kit encourages smaller, focused files and gives the agent one
 reliable place to learn how your project should be handled.
@@ -111,14 +110,13 @@ Check whether the project's written rules are checked automatically:
 $ai-governance assess enforcement
 ```
 
-Improve how code is organised in one folder without intentionally changing what
-the product does:
+Improve how code is organised in one folder without changing the entire project:
 
 ```text
 $ai-governance refactor folder src/payments
 ```
 
-Review and improve project files owned by your team. Downloaded, generated, and
+Review and improve the entire project. Downloaded, generated, and
 temporary files are excluded. This can take much longer than reviewing one
 folder:
 

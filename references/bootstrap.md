@@ -22,6 +22,19 @@ tooling actually enforces each selection in `.ai-governance/enforcement.md`.
 Before editing active governance, create and verify the pre-change version
 required by `versioning-and-revert.md`. Record would-be new files as absent.
 
+## Keep local governance history out of Git
+
+Ensure the adopting repository's root `.gitignore` ignores
+`/.ai-governance/`. If the root `.gitignore` is absent, create it. If an
+existing effective rule already ignores the root `.ai-governance` folder, keep
+that rule and do not add a duplicate. Otherwise append the root-anchored
+`/.ai-governance/` rule while preserving the file's existing content and line
+ending style.
+
+Treat the root `.gitignore` as an affected governance file for the pre-change
+version. Verify the result with Git's ignore checking when Git is available;
+otherwise inspect the final root rule directly and report that limitation.
+
 ## Discover the repository
 
 Inspect read-only before editing:
@@ -91,6 +104,8 @@ action.
   enforcement work.
 - Confirm `.ai-governance/state.md` points to the pre-change version and records
   the resulting authority map.
+- Confirm the root `.gitignore` exists and ignores `/.ai-governance/` without a
+  duplicate rule.
 - Confirm the selected character limit, file-line limit, strict or loose mode,
   documentation treatment, file exclusions, and exception process agree across
   the engineering authority, state, and enforcement record.
