@@ -24,6 +24,19 @@ named check and that the check runs in the promised gate. For loose mode, record
 where the target is communicated or reviewed and do not describe it as a failing
 gate. Apply the recorded documentation inclusion or omission consistently.
 
+## File-length coverage
+
+- Selected maximum: `<FILE_LINE_COUNT>`
+- Included files: `<MAINTAINED_FILE_TYPES_OR_PATHS>`
+- Excluded machine-owned files: `<GENERATED_VENDORED_LOCK_SNAPSHOT_OR_NONE>`
+- Enforcing or advisory mechanism: `<COMMAND_TOOL_MANUAL_REVIEW_OR_NONE>`
+- Gate or review location: `<PATH_COMMAND_OR_NONE>`
+- Approved exceptions: `<PATHS_WITH_OWNER_RATIONALE_AND_REVIEW_CONDITION_OR_NONE>`
+- Last verified: `<UTC_TIMESTAMP_OR_NOT_VERIFIED>`
+
+Record evidence when an over-limit eligible file fails a named check. When the
+limit is review-only, describe it as manual coverage rather than a failing gate.
+
 ## Capability map
 
 For each applicable capability, record its state, adopted command or manual

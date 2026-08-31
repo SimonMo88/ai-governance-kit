@@ -10,14 +10,17 @@ verify the snapshot manifest and digests.
 
 Before bootstrap or upgrade edits begin, the adopter must answer:
 
-1. the maximum line length, with 80, 100, and 120 characters presented as
+1. the maximum characters in one line, with 80, 100, and 120 presented as
    illustrative choices rather than defaults;
 2. whether enforcement is strict or loose, after seeing examples of how each
-   mode treats an over-limit line; and
+   mode treats a line over the character limit;
 3. whether documentation files, documentation comments, and docstrings are
-   included in or omitted from the limit.
+   included in or omitted from the character limit; and
+4. the maximum lines in one maintained file, with 300, 500, and 1,000 presented
+   as illustrative choices rather than defaults, plus the treatment of
+   generated, vendored, lock, snapshot, and other machine-owned files.
 
-The agent must inspect and disclose existing settings, ask all three questions,
+The agent must inspect and disclose existing settings, ask all four questions,
 and wait. Existing configuration is evidence, not permission to skip the choice.
 
 ## 1. Copy the universal authorities
@@ -72,6 +75,11 @@ For strict line length, identify the exact check and gate that fail on an
 applicable over-limit line. For loose line length, record the formatter,
 review-time guidance, or manual check without claiming a hard gate. Apply the
 user's documentation inclusion or omission consistently.
+
+For maximum file length, identify the exact check or review that counts lines in
+eligible maintained files. Do not claim a hard gate when the limit is checked
+only during review. Record included files, excluded machine-owned files, and the
+documented exception process.
 
 ## 5. Document actual ownership and invariants
 

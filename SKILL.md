@@ -1,12 +1,15 @@
 ---
 name: ai-governance
-description: Introduce or upgrade stack-neutral AI governance, explicitly assess and improve executable governance enforcement, or refactor a folder or repository against its local authorities.
+description: Manage AI Governance Kit, introduce or upgrade governance, assess enforcement, or refactor code under local authorities.
 ---
 
 # AI governance
 
 Use the mode implied by the request:
 
+- **Manage installation** checks, updates, repairs, rolls back, or removes this
+  installed skill. Read
+  [references/manage-installation.md](references/manage-installation.md).
 - **Bootstrap** introduces AI governance to an existing project. Read
   [references/bootstrap.md](references/bootstrap.md).
 - **Upgrade** improves an existing governance setup. Read
@@ -23,22 +26,35 @@ Use the mode implied by the request:
 If the request combines modes, bootstrap or upgrade governance before using it
 to refactor code.
 
-## Required line-length decision
+Recognize `status`, `doctor`, `update`, `rollback`, `repair`, and `uninstall` as
+installation-management requests. Recognize `refactor folder <path>` and
+`refactor project` as the bounded refactoring modes above. If the user requests
+only `refactor`, ask whether they mean one folder or the entire repository before
+editing files.
+
+## Required line and file length decisions
 
 Before every bootstrap or upgrade, inspect any existing formatter, linter, and
-editor settings, then ask the user all three questions below and wait for their
-answers:
+editor settings and any file-size checks, then ask the user all four questions
+below and wait for their answers:
 
-1. What maximum line length should the repository use? Give examples such as 80
-   characters for compact code, 100 for a balanced default, and 120 for wider
-   codebases.
-2. Should the limit be strict or loose? Explain that strict means an applicable
-   line over the limit fails the configured check unless it matches an explicit
-   repository exception, while loose means the limit is a readability target and
-   a justified longer line does not fail verification solely because of length.
-3. Should documentation be included in the line count or omitted? Explain that
-   inclusion covers maintained documentation files, documentation comments, and
-   docstrings, while omission exempts all three from the limit.
+1. What maximum number of characters should one line contain? Give examples such
+   as 80 characters for compact code, 100 for a balanced limit, and 120 for
+   wider codebases.
+2. Should the character limit be strict or loose? Explain that strict means an
+   applicable line over the limit fails the configured check unless it matches
+   an explicit repository exception, while loose means the limit is a
+   readability target and a justified longer line does not fail verification
+   solely because of length.
+3. Should documentation be included in the character count or omitted? Explain
+   that inclusion covers maintained documentation files, documentation comments,
+   and docstrings, while omission exempts all three from the limit.
+4. What maximum number of lines should one maintained file contain? Present 300,
+   500, and 1,000 lines as illustrative choices rather than defaults. Explain
+   that files over the selected maximum must be split around meaningful
+   responsibilities or covered by a documented repository exception. Generated,
+   vendored, lock, snapshot, and other machine-owned files need an explicit
+   inclusion or exclusion decision.
 
 Use a concrete example when presenting the choices. With a 100-character limit,
 strict mode rejects an applicable 101-character code line; loose mode treats the
@@ -46,6 +62,10 @@ same line as a review decision and permits it when wrapping would reduce
 readability. If documentation is included, a 101-character maintained Markdown
 or docstring line receives the same treatment; if omitted, that documentation
 line is not evaluated against the limit.
+
+For the file limit, explain that a selected maximum of 500 lines makes a
+501-line maintained file over the limit. The right response is a meaningful
+split or an approved exception, never compressed or less-readable code.
 
 Always ask even when the repository already has a configured value. Present the
 discovered setting as context rather than treating it as renewed owner approval.

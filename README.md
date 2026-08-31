@@ -1,182 +1,152 @@
-# AI repository governance kit
+# AI Governance Kit
 
 ![AI Governance Kit](assets/ai-governance-kit-banner.jpg)
-This directory is a stack-neutral set of instructions for AI coding agents and
-human contributors. It defines how work should be understood, implemented,
-reviewed, and verified without assuming a language, framework, package manager,
-repository layout, deployment platform, frontend, or backend.
 
-It can be used in five ways:
+AI Governance Kit helps Codex and Claude understand how your project should be
+changed. It gives them clear rules about how your project works, what must not
+break, and how changes should be checked.
 
-- introduce AI governance to an existing repository;
-- upgrade and consolidate an existing governance setup;
-- separately assess executable coverage and improve only user-selected gaps;
-- ask an AI agent to refactor a specified folder under the adopted quality and
-  domain rules;
-- ask an AI agent to review and refactor the whole repository under those rules.
+## Why use it?
 
-The kit is intentionally Markdown-only. An adopting repository owns its actual
-commands and enforcement tools. This keeps the governance portable while making
-the repository, rather than the template, authoritative about how it builds and
-tests.
+Without clear guidance, an AI agent may misunderstand your project, follow the
+wrong patterns, or say work is finished without checking it properly.
 
-## Contents
+It may also keep adding code to the same file until that file grows beyond 2,000
+lines. Files this large are difficult for people to understand and take the AI
+longer to read and change. That can slow down future work and make mistakes more
+likely.
 
-- `AGENTS.md`: concise root instructions and authority ordering.
-- `AI_CONTEXT.md`: routes tasks to the smallest relevant context set.
-- `ENGINEERING_QUALITY.md`: stack-neutral coding and maintainability rules.
-- `TESTING.md`: behavior-oriented test and verification policy.
-- `SECURITY.md`: trust-boundary and data-handling requirements.
-- `docs/architecture.md`: template for current system boundaries and ownership.
-- `docs/product-invariants.md`: template for non-negotiable product behavior.
-- `scopes/frontend/AGENTS.md`: optional frontend-specific instructions.
-- `scopes/backend/AGENTS.md`: optional backend-specific instructions.
-- `ADOPTION.md`: installation and customization checklist.
-- `.ai-governance/`: copyable repository-local history, rollback versions,
-  authority state, enforcement capability record, and drift evidence.
-- `SKILL.md`: repeatable AI entry point for bootstrap, upgrade, enforcement
-  assessment, folder refactoring, and whole-project refactoring workflows.
-- `references/`: detailed workflow instructions loaded only for the selected
-  mode.
+AI Governance Kit encourages smaller, focused files and gives the agent one
+reliable place to learn how your project should be handled.
 
-## Design principles
+## What will I get?
 
-1. The root agent file routes to authorities instead of duplicating them.
-2. Universal policy is separated from product and architectural facts.
-3. Scoped instructions live near the code they govern.
-4. Every required verification command is declared by the adopting repository.
-5. Prose rules should be backed by automated enforcement when practical.
-6. Local instructions may strengthen parent rules but may not weaken them.
+Your project will gain clear instructions that tell AI coding agents:
 
-## What adopters must supply
+- which project documents to trust;
+- what user behaviour must remain unchanged;
+- how different parts of the project fit together;
+- how changes should be written and checked;
+- when your approval is required;
+- how to report unfinished or uncertain work honestly.
 
-The kit contains placeholders in angle brackets, such as
-`<FULL_VERIFICATION_COMMAND>`. Replace every placeholder before declaring the
-kit active.
+You can also ask the agent to review and improve one folder or your whole
+project.
 
-At minimum, define:
+## Before you start
 
-- the repository's formatting, static-analysis, test, and build commands;
-- the owner-selected maximum line length, strict or loose enforcement mode, and
-  whether documentation is included in or omitted from that limit;
-- the locations of frontend, backend, shared, generated, and excluded code;
-- the system's architectural ownership boundaries;
-- its non-negotiable product or operational invariants;
-- any framework, language, accessibility, data, or deployment authorities.
+Commands beginning with `ai-governance` go in your computer's terminal.
+Commands beginning with `$ai-governance` go in your conversation with Codex.
+For Claude Code, use `/ai-governance` instead.
 
-Do not copy product facts, package names, paths, commands, or exceptions from
-the source repository that produced this kit.
+Installation adds the kit to your computer. It does not change any of your
+projects. The simple installer supports macOS and Linux.
 
-## Install as an AI skill
+## Install
 
-Keep this repository together when installing it. `SKILL.md` loads the files in
-`references/` and uses the Markdown templates at the repository root; copying
-only `SKILL.md` produces an incomplete skill.
-
-The simplest personal installation uses one checkout and symlinks it into each
-agent's skill directory:
+Run this in your terminal:
 
 ```bash
-git clone git@github.com:SimonMo88/ai-governance-kit.git ~/ai-governance-kit
-mkdir -p ~/.claude/skills ~/.agents/skills
-ln -s ~/ai-governance-kit ~/.claude/skills/ai-governance
-ln -s ~/ai-governance-kit ~/.agents/skills/ai-governance
+# Download and install the newest tested version for Codex and Claude Code.
+curl -fsSL https://github.com/SimonMo88/ai-governance-kit/releases/latest/download/install.sh | sh
 ```
 
-If the repository is already cloned, point the symlinks at that existing
-checkout instead. The commands deliberately fail when a destination already
-exists; inspect the existing installation before replacing it.
+The installer will tell you what it installed and what to do next. See the
+[installation guide](docs/installation.md) for other options and Windows setup.
 
-To update both agents later, update the shared checkout:
+## Check the installation
 
 ```bash
-git -C ~/ai-governance-kit pull --ff-only
+# Show the installed version and whether Codex and Claude Code can find it.
+ai-governance status
+
+# Find installation problems without changing anything.
+ai-governance doctor
 ```
 
-### Claude Code
-
-Claude Code discovers personal skills at
-`~/.claude/skills/<skill-name>/SKILL.md`. The personal symlink above makes the
-kit available in every project. For a project-only installation, expose the
-checkout inside that repository instead:
+## Keep it updated
 
 ```bash
-mkdir -p .claude/skills
-ln -s /absolute/path/to/ai-governance-kit .claude/skills/ai-governance
+# Install the newest tested version without changing your projects.
+ai-governance update
+
+# Return to the version you had before the last update.
+ai-governance rollback
 ```
 
-Claude Code enables a discovered skill by default. If the top-level skills
-directory was created after the current session started, restart Claude Code.
-Then run `/skills` to confirm that `ai-governance` is listed and invoke it with
-`/ai-governance`, or make a natural-language request that matches its
-description. See Anthropic's
-[Claude Code skills documentation](https://code.claude.com/docs/en/skills) for
-the current discovery and enablement behavior.
+## Fix or remove it
 
-Claude.ai Cowork and cloud sessions do not read `~/.claude/skills` from the
-local machine. To use the kit there, upload and enable it for the Claude.ai
-account from **Customize > Skills**, or commit a project-scoped copy under
-`.claude/skills/ai-governance/` for Claude cloud sessions.
-
-### ChatGPT and Codex
-
-ChatGPT desktop and Codex use the same standalone skill format. Codex discovers
-personal skills at `~/.agents/skills/<skill-name>/SKILL.md`, so the personal
-symlink above keeps the existing Codex workflow available in every repository.
-For a repository-only installation, expose the checkout from that repository:
+Run `ai-governance doctor` first. It will explain the problem and give you the
+right repair command.
 
 ```bash
-mkdir -p .agents/skills
-ln -s /absolute/path/to/ai-governance-kit .agents/skills/ai-governance
+# Repair the Codex installation after doctor reports a broken link.
+ai-governance repair --target codex
+
+# Show what will be removed and ask before uninstalling the kit.
+ai-governance uninstall
 ```
 
-Local skills are enabled when discovered. In the ChatGPT desktop app, open
-**Skills** in the sidebar and select `@ai-governance`. In Codex, run `/skills`
-to confirm discovery and mention `$ai-governance` explicitly, or make a request
-that matches the skill description. Codex normally detects changes
-automatically; restart it if a new installation does not appear. See OpenAI's
-[skills documentation](https://learn.chatgpt.com/docs/build-skills) for the
-current ChatGPT and Codex behavior.
+## Use it in Codex or Claude
 
-A local standalone skill is not installed into ChatGPT on the web or mobile.
-Those surfaces require the skill to be distributed as a
-[plugin](https://learn.chatgpt.com/docs/plugins). The repository is currently a
-standalone skill, not a plugin package.
+`status` and `doctor` only inspect the installation. `bootstrap`, `upgrade`, and
+`refactor` can change project files. Review those changes before committing
+them.
 
-### Use the skill
-
-After the relevant agent lists the skill, request one of these outcomes in
-natural language:
+Add AI guidance to a project that does not have it yet:
 
 ```text
-Use ai-governance to introduce AI governance to this repository.
-Use ai-governance to upgrade the existing governance in this repository.
-Use ai-governance to assess and improve governance enforcement in this repository.
-Use ai-governance to refactor <folder> under its code-quality and domain rules.
-Use ai-governance to refactor this entire repository under its engineering-quality and domain rules. Review every eligible project-owned source, test, configuration, script, and maintained documentation file; make only justified behavior-preserving improvements; preserve public contracts and unrelated changes; validate in cohesive stages; and report remaining findings and validation limits accurately.
+$ai-governance bootstrap
 ```
 
-The folder workflow is deliberately bounded to the named folder. It reviews
-every eligible file there but does not force edits into healthy files or silently
-expand into the rest of the repository.
+Improve the AI guidance already in a project:
 
-The whole-project workflow is also bounded: it builds a finite inventory of
-project-owned files, excludes dependencies and generated, vendored, cached, and
-build output, then works through cohesive ownership areas with focused
-validation. “Entire repository” means every eligible file is reviewed, not that
-every file must be changed. If the repository cannot be responsibly completed in
-one run, the agent must identify exactly what was reviewed and what remains
-instead of claiming completion.
+```text
+$ai-governance upgrade
+```
 
-Every bootstrap or upgrade first creates an immutable, checksummed snapshot of
-the affected existing governance under `.ai-governance/versions/`. Reverting a
-version first snapshots the current governance, so both the upgrade and its
-reversal are recoverable without touching application code.
+Check whether the project's written rules are checked automatically:
 
-Bootstrap and upgrade never install enforcement automatically. They report what
-is already executable and offer a separate action. That action preserves useful
-project-native tooling by default, explains coverage in plain language, starts
-with a read-only scorecard and dry run, lets the user choose individual gaps,
-and requires explicit approval before versioned changes. Replacement and removal
-need separate confirmation. Reassessment records drift and proposes no edits
-when the repository is unchanged.
+```text
+$ai-governance assess enforcement
+```
+
+Improve how code is organised in one folder without intentionally changing what
+the product does:
+
+```text
+$ai-governance refactor folder src/payments
+```
+
+Review and improve project files owned by your team. Downloaded, generated, and
+temporary files are excluded. This can take much longer than reviewing one
+folder:
+
+```text
+$ai-governance refactor project
+```
+
+In Claude Code, replace `$ai-governance` with `/ai-governance` in these examples.
+
+## Manage it from an AI conversation
+
+You can also ask the skill to check or manage its installation:
+
+- `$ai-governance status` — show the installed version and agent connections.
+- `$ai-governance doctor` — find problems without changing anything.
+- `$ai-governance update` — install the newest tested version.
+- `$ai-governance rollback` — return to the version used before the update.
+- `$ai-governance repair` — fix a problem found by `doctor`.
+- `$ai-governance uninstall` — show what will be removed and ask first.
+
+The agent will explain any change and follow its normal approval rules. If you
+run `ai-governance refactor` in a terminal, it will give you the right AI prompt;
+it will not change your project.
+
+## More help
+
+- [Installation and updates](docs/installation.md)
+- [All terminal commands](docs/commands.md)
+- [Ways to use the kit](docs/workflows.md)
+- [Troubleshooting](docs/troubleshooting.md)
+- [What gets added to a project](ADOPTION.md)

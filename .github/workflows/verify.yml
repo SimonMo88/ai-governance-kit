@@ -1,0 +1,21 @@
+name: Verify
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check shell syntax
+        run: sh -n install.sh bin/ai-governance tests/*.sh
+      - name: Test documentation links
+        run: sh tests/readme-links.sh
+      - name: Test installer and CLI
+        run: sh tests/install-and-cli.sh

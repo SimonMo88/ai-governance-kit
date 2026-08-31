@@ -3,18 +3,21 @@
 Use this mode when a project has no coherent AI instructions or the user asks to
 introduce AI-assisted development.
 
-## Confirm line-length policy
+## Confirm line and file length policies
 
-After inspecting existing formatter, linter, and editor settings, ask the three
-line-length questions required by `SKILL.md` and wait for the user's answers.
+After inspecting existing formatter, linter, editor, and file-size settings, ask
+the four length questions required by `SKILL.md` and wait for the user's answers.
 Show concrete 80-, 100-, and 120-character examples, explain strict versus loose
 behavior with a representative passing and over-limit line, and ask whether
 documentation files, documentation comments, and docstrings are included or
-omitted. Do not choose defaults on the user's behalf.
+omitted. Present 300, 500, and 1,000 lines as illustrative maximum file lengths,
+explain how an over-limit file should be split or excepted, and identify the
+treatment of machine-owned files. Do not choose defaults on the user's behalf.
 
-Record the selected maximum, enforcement mode, and documentation treatment in
-the engineering authority and `.ai-governance/state.md`. Record whether current
-tooling actually enforces the selection in `.ai-governance/enforcement.md`.
+Record the selected character maximum, file-line maximum, enforcement mode,
+documentation treatment, file exclusions, and exception process in the
+engineering authority and `.ai-governance/state.md`. Record whether current
+tooling actually enforces each selection in `.ai-governance/enforcement.md`.
 
 Before editing active governance, create and verify the pre-change version
 required by `versioning-and-revert.md`. Record would-be new files as absent.
@@ -88,6 +91,6 @@ action.
   enforcement work.
 - Confirm `.ai-governance/state.md` points to the pre-change version and records
   the resulting authority map.
-- Confirm the selected line length, strict or loose mode, and documentation
-  inclusion or omission agree across the engineering authority, state, and
-  enforcement record.
+- Confirm the selected character limit, file-line limit, strict or loose mode,
+  documentation treatment, file exclusions, and exception process agree across
+  the engineering authority, state, and enforcement record.

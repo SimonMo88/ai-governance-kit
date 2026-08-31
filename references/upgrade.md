@@ -3,18 +3,23 @@
 Use this mode when agent instructions or engineering authorities already exist.
 An upgrade is a merge and clarification exercise, not a template overwrite.
 
-## Reconfirm line-length policy
+## Reconfirm line and file length policies
 
 Inspect the repository's current formatter, linter, editor, and written
-line-length settings. Present what is currently configured, then ask the three
-line-length questions required by `SKILL.md` and wait for the user's answers.
+line-length and file-size settings. Present what is currently configured, then
+ask the four length questions required by `SKILL.md` and wait for the user's
+answers.
 Give concrete 80-, 100-, and 120-character examples, explain strict versus loose
 behavior with a representative passing and over-limit line, and ask whether
 documentation files, documentation comments, and docstrings are included or
-omitted. Never treat an existing setting as renewed owner approval.
+omitted. Present 300, 500, and 1,000 lines as illustrative maximum file lengths,
+explain how over-limit files should be split or excepted, and identify the
+treatment of machine-owned files. Never treat an existing setting as renewed
+owner approval.
 
 Update the engineering authority and `.ai-governance/state.md` with the selected
-maximum, enforcement mode, and documentation treatment. Update
+character maximum, file-line maximum, enforcement mode, documentation treatment,
+file exclusions, and exception process. Update
 `.ai-governance/enforcement.md` with the current executable or manual coverage.
 If the selected policy is not enforced, report the gap; the upgrade does not
 authorize changing enforcement tooling.
@@ -73,8 +78,8 @@ the capability clearly.
 ## Prove the upgrade
 
 Check links, paths, command names, scope discovery, and unresolved placeholders.
-Confirm the line-length decision agrees across the engineering authority, state,
-and enforcement record.
+Confirm the character-limit and file-line-limit decisions agree across the
+engineering authority, state, and enforcement record.
 Run governance-specific checks followed by the repository's complete gate. Report
 the previous and new authority map, preserved local rules, removed duplication,
 unenforced policy, the version that can restore the prior governance, and any

@@ -1,0 +1,276 @@
+#!/bin/sh
+
+set -eu
+
+PROGRAM_NAME="ai-governance"
+REPOSITORY="${AI_GOVERNANCE_REPOSITORY:-SimonMo88/ai-governance-kit}"
+DATA_DIR="${AI_GOVERNANCE_DATA_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/ai-governance-kit}"
+CURRENT_LINK="$DATA_DIR/current"
+PREVIOUS_LINK="$DATA_DIR/previous"
+CODEX_SKILL_DIR="${AI_GOVERNANCE_CODEX_SKILL_DIR:-$HOME/.agents/skills}"
+CLAUDE_SKILL_DIR="${AI_GOVERNANCE_CLAUDE_SKILL_DIR:-$HOME/.claude/skills}"
+
+say() {
+  printf '%s\n' "$*"
+}
+
+fail() {
+  printf '%s: %s\n' "$PROGRAM_NAME" "$*" >&2
+  exit 1
+}
+
+case "$DATA_DIR" in
+  ""|/|"$HOME"|"$HOME/")
+    fail "the installation directory is too broad"
+    ;;
+esac
+
+current_version() {
+  [ -r "$CURRENT_LINK/VERSION" ] || return 1
+  sed -n '1p' "$CURRENT_LINK/VERSION"
+}
+
+link_state() {
+  link_path=$1
+  if [ -L "$link_path" ] && [ -e "$link_path/SKILL.md" ]; then
+    link_target=$(resolve_link "$link_path" || true)
+    case "$link_target" in
+      "$DATA_DIR"/*) printf 'installed' ;;
+      *) printf 'different installation' ;;
+    esac
+  elif [ -L "$link_path" ]; then
+    printf 'broken link'
+  elif [ -e "$link_path" ]; then
+    printf 'different installation'
+  else
+    printf 'not installed'
+  fi
+}
+
+latest_version() {
+  curl -fsSL "https://api.github.com/repos/$REPOSITORY/releases/latest" 2>/dev/null |
+    sed -n 's/.*"tag_name"[[:space:]]*:[[:space:]]*"v\{0,1\}\([^"]*\)".*/\1/p' |
+    sed -n '1p'
+}
+
+show_status() {
+  version=$(current_version) || fail "no managed installation was found"
+  latest=$(latest_version || true)
+
+  say "AI Governance Kit v$version"
+  say "Codex: $(link_state "$CODEX_SKILL_DIR/ai-governance")"
+  say "Claude Code: $(link_state "$CLAUDE_SKILL_DIR/ai-governance")"
+
+  if [ -n "$latest" ] && [ "$latest" != "$version" ]; then
+    say "Newest version: v$latest"
+    say "Update available: yes"
+  elif [ -n "$latest" ]; then
+    say "Update available: no"
+  else
+    say "Update check: unavailable"
+  fi
+}
+
+check_required_file() {
+  relative_path=$1
+  if [ ! -r "$CURRENT_LINK/$relative_path" ]; then
+    say "Problem: missing $relative_path"
+    DOCTOR_PROBLEMS=$((DOCTOR_PROBLEMS + 1))
+  fi
+}
+
+show_doctor() {
+  DOCTOR_PROBLEMS=0
+  say "AI Governance Doctor"
+  say ""
+
+  if ! version=$(current_version); then
+    say "Problem: no managed installation was found."
+    say "Install the kit again using the command in the README."
+    exit 1
+  fi
+
+  say "Version: v$version"
+  check_required_file "SKILL.md"
+  check_required_file "references/bootstrap.md"
+  check_required_file "references/upgrade.md"
+  check_required_file "references/assess-enforcement.md"
+  check_required_file "references/refactor-folder.md"
+  check_required_file "references/refactor-project.md"
+  check_required_file "references/manage-installation.md"
+
+  for skill_dir in "$CODEX_SKILL_DIR" "$CLAUDE_SKILL_DIR"; do
+    skill_link="$skill_dir/ai-governance"
+    state=$(link_state "$skill_link")
+    if [ "$state" = "broken link" ] || [ "$state" = "different installation" ]; then
+      say "Problem: $skill_link is a $state."
+      DOCTOR_PROBLEMS=$((DOCTOR_PROBLEMS + 1))
+    fi
+  done
+
+  if [ ! -w "$DATA_DIR" ]; then
+    say "Problem: the installation directory is not writable."
+    DOCTOR_PROBLEMS=$((DOCTOR_PROBLEMS + 1))
+  fi
+
+  if [ "$DOCTOR_PROBLEMS" -eq 0 ]; then
+    say "Installation: healthy"
+    exit 0
+  fi
+
+  say ""
+  say "$DOCTOR_PROBLEMS problem(s) found."
+  say "Run '$PROGRAM_NAME repair --target codex' or '--target claude' for a broken skill link."
+  exit 1
+}
+
+run_installer() {
+  [ -r "$CURRENT_LINK/install.sh" ] || fail "the installed updater is missing; install the kit again"
+  sh "$CURRENT_LINK/install.sh" "$@"
+}
+
+resolve_link() {
+  link_path=$1
+  link_value=$(readlink "$link_path") || return 1
+  case "$link_value" in
+    /*) printf '%s\n' "$link_value" ;;
+    *) printf '%s/%s\n' "$(dirname "$link_path")" "$link_value" ;;
+  esac
+}
+
+rollback_installation() {
+  [ -L "$PREVIOUS_LINK" ] || fail "no previous version is available"
+  current_target=$(resolve_link "$CURRENT_LINK") || fail "the current installation link is invalid"
+  previous_target=$(resolve_link "$PREVIOUS_LINK") || fail "the previous installation link is invalid"
+  [ -r "$previous_target/VERSION" ] || fail "the previous installation is incomplete"
+
+  temporary_link="$DATA_DIR/.rollback-current.$$"
+  ln -s "$previous_target" "$temporary_link"
+  rm -f "$CURRENT_LINK"
+  mv "$temporary_link" "$CURRENT_LINK"
+  rm -f "$PREVIOUS_LINK"
+  ln -s "$current_target" "$PREVIOUS_LINK"
+  say "Restored AI Governance Kit v$(sed -n '1p' "$CURRENT_LINK/VERSION")."
+}
+
+repair_target() {
+  target=${1:-}
+  [ -r "$CURRENT_LINK/SKILL.md" ] || fail "the managed installation is incomplete; install it again"
+
+  case "$target" in
+    codex) skill_dir=$CODEX_SKILL_DIR ;;
+    claude) skill_dir=$CLAUDE_SKILL_DIR ;;
+    *) fail "choose a repair target: --target codex or --target claude" ;;
+  esac
+
+  skill_link="$skill_dir/ai-governance"
+  if [ -e "$skill_link" ] && [ ! -L "$skill_link" ]; then
+    fail "$skill_link is a real file or directory and will not be replaced"
+  fi
+  if [ -L "$skill_link" ]; then
+    existing_target=$(resolve_link "$skill_link" || true)
+    case "$existing_target" in
+      "$DATA_DIR"/*) ;;
+      *) fail "$skill_link belongs to a different installation and will not be replaced" ;;
+    esac
+  fi
+  mkdir -p "$skill_dir"
+  rm -f "$skill_link"
+  ln -s "$CURRENT_LINK" "$skill_link"
+  say "Repaired the $target skill link."
+}
+
+uninstall_managed_files() {
+  say "This removes the managed AI Governance Kit installation and its skill links."
+  printf 'Continue? [y/N] '
+  read -r answer
+  case "$answer" in
+    y|Y|yes|YES) ;;
+    *) say "Nothing was removed."; exit 0 ;;
+  esac
+
+  for skill_link in \
+    "$CODEX_SKILL_DIR/ai-governance" \
+    "$CLAUDE_SKILL_DIR/ai-governance"
+  do
+    if [ -L "$skill_link" ]; then
+      link_target=$(resolve_link "$skill_link" || true)
+      case "$link_target" in
+        "$DATA_DIR"/*) rm -f "$skill_link" ;;
+      esac
+    fi
+  done
+
+  bin_link="${AI_GOVERNANCE_BIN_DIR:-$HOME/.local/bin}/ai-governance"
+  if [ -L "$bin_link" ]; then
+    bin_target=$(resolve_link "$bin_link" || true)
+    case "$bin_target" in
+      "$DATA_DIR"/*) rm -f "$bin_link" ;;
+    esac
+  fi
+  [ -r "$CURRENT_LINK/VERSION" ] || fail "the managed installation marker is missing"
+  rm -rf "$DATA_DIR"
+  say "AI Governance Kit was removed."
+}
+
+show_prompt() {
+  prompt_request=$*
+  case "$prompt_request" in
+    "bootstrap") say 'Use $ai-governance to introduce AI governance to this repository.' ;;
+    "upgrade") say 'Use $ai-governance to upgrade the existing governance in this repository.' ;;
+    "assess enforcement") say 'Use $ai-governance to assess executable governance enforcement in this repository.' ;;
+    "refactor project")
+      say 'Use $ai-governance to refactor this entire repository under its local engineering and domain rules.'
+      ;;
+    "refactor folder "*)
+      folder=${prompt_request#refactor folder }
+      say "Use \$ai-governance to refactor only $folder under this repository's local engineering and domain rules."
+      ;;
+    *)
+      fail "try: prompt bootstrap, upgrade, assess enforcement, refactor project, or refactor folder <path>"
+      ;;
+  esac
+}
+
+show_help() {
+  cat <<'EOF'
+AI Governance Kit
+
+Manage the installation:
+  ai-governance status
+  ai-governance doctor
+  ai-governance update
+  ai-governance rollback
+  ai-governance repair --target codex|claude
+  ai-governance uninstall
+
+Prepare a prompt for Codex or Claude:
+  ai-governance prompt bootstrap
+  ai-governance prompt upgrade
+  ai-governance prompt assess enforcement
+  ai-governance prompt refactor folder <path>
+  ai-governance prompt refactor project
+EOF
+}
+
+command=${1:-help}
+[ "$#" -eq 0 ] || shift
+
+case "$command" in
+  status) show_status ;;
+  doctor) show_doctor ;;
+  update) run_installer "$@" ;;
+  rollback) rollback_installation ;;
+  repair)
+    [ "${1:-}" = "--target" ] || fail "use --target codex or --target claude"
+    repair_target "${2:-}"
+    ;;
+  uninstall) uninstall_managed_files ;;
+  prompt) show_prompt "$@" ;;
+  refactor|bootstrap|upgrade|assess)
+    say "'$PROGRAM_NAME $command' does not change a project from the terminal."
+    say "Run '$PROGRAM_NAME prompt $command $*' to get a prompt for Codex or Claude."
+    ;;
+  help|-h|--help) show_help ;;
+  *) fail "unknown command '$command'; run '$PROGRAM_NAME help'" ;;
+esac

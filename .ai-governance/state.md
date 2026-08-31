@@ -14,6 +14,13 @@
 - Documentation treatment: `<INCLUDED_OR_OMITTED>`
 - Approved exceptions: `<PATHS_CONTENT_TYPES_OR_NONE>`
 
+## Owner-selected file-length policy
+
+- Maximum lines in one maintained file: `<FILE_LINE_COUNT>`
+- Included files: `<MAINTAINED_FILE_TYPES_OR_PATHS>`
+- Excluded machine-owned files: `<GENERATED_VENDORED_LOCK_SNAPSHOT_OR_NONE>`
+- Approved exceptions: `<PATHS_WITH_OWNER_RATIONALE_AND_REVIEW_CONDITION_OR_NONE>`
+
 ## Authority map
 
 - Root agent instructions: `<PATH>`

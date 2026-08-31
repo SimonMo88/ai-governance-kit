@@ -41,10 +41,16 @@ operate, and safely modify it.
 
 ## Responsibilities and structure
 
+- Maximum maintained file length: `<MAX_FILE_LINES>` lines.
+- Files over the selected maximum must be split around meaningful
+  responsibilities or covered by a documented exception with an owner,
+  rationale, precise scope, and review or expiry condition.
+- Define whether generated files, vendored code, lockfiles, snapshots, and other
+  machine-owned files are included or excluded from the file-line limit.
 - Give every module one clear primary responsibility.
-- Treat file and function size as maintainability signals, not arbitrary quotas.
-- Review growing modules for separable responsibilities; do not compress or
-  fragment code merely to satisfy a line count.
+- Treat the selected file maximum as a maintainability boundary, not a reason to
+  compress code or create fragments without clear ownership.
+- Review growing modules early for separable responsibilities.
 - Extract a module only when it represents a meaningful concept, boundary,
   capability, or independently testable responsibility.
 - Organize business behavior by domain or feature rather than accumulating
