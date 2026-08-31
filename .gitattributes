@@ -1,2 +1,3 @@
 .ai-governance/versions/ export-ignore
 tests/ export-ignore
+scripts/ export-ignore

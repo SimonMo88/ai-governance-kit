@@ -18,7 +18,7 @@ jobs:
         run: test "${GITHUB_REF_NAME#v}" = "$(cat VERSION)"
       - name: Verify
         run: |
-          sh -n install.sh bin/ai-governance tests/*.sh
+          sh -n install.sh bin/ai-governance tests/*.sh scripts/release.sh
           sh tests/readme-links.sh
           sh tests/install-and-cli.sh
       - name: Build release files

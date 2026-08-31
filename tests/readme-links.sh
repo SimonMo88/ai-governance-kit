@@ -10,6 +10,7 @@ for relative_path in \
   docs/commands.md \
   docs/workflows.md \
   docs/troubleshooting.md \
+  docs/releasing.md \
   ADOPTION.md
 do
   [ -e "$PROJECT_ROOT/$relative_path" ] || {

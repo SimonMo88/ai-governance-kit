@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Check shell syntax
-        run: sh -n install.sh bin/ai-governance tests/*.sh
+        run: sh -n install.sh bin/ai-governance tests/*.sh scripts/release.sh
       - name: Test documentation links
         run: sh tests/readme-links.sh
       - name: Test installer and CLI

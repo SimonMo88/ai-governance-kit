@@ -150,3 +150,4 @@ it will not change your project.
 - [Ways to use the kit](docs/workflows.md)
 - [Troubleshooting](docs/troubleshooting.md)
 - [What gets added to a project](ADOPTION.md)
+- [How maintainers publish a release](docs/releasing.md)

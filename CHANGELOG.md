@@ -10,3 +10,4 @@
 - Add automated installation, command, link, and release checks.
 - Require adopters to choose both a character limit for each line and a maximum
   number of lines for each maintained file.
+- Add a guarded maintainer script for validating and starting a GitHub release.
