@@ -111,7 +111,7 @@ printf 'Running release checks...\n'
 sh -n install.sh bin/ai-governance tests/*.sh scripts/release.sh
 sh tests/readme-links.sh
 sh tests/install-and-cli.sh
-git diff --check
+git --no-pager diff --check
 
 printf '\nReady to release AI Governance Kit %s.\n' "$tag"
 printf 'Base commit: %s\n' "$local_head"
