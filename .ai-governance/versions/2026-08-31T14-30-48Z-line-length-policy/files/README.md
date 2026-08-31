@@ -1,6 +1,7 @@
 # AI repository governance kit
 
-![AI Governance Kit](assets/ai-governance-kit-banner.jpg)
+![AI Governance Kit](assets/ai-governance-kit-banner.png)
+
 This directory is a stack-neutral set of instructions for AI coding agents and
 human contributors. It defines how work should be understood, implemented,
 reviewed, and verified without assuming a language, framework, package manager,
@@ -57,8 +58,6 @@ kit active.
 At minimum, define:
 
 - the repository's formatting, static-analysis, test, and build commands;
-- the owner-selected maximum line length, strict or loose enforcement mode, and
-  whether documentation is included in or omitted from that limit;
 - the locations of frontend, backend, shared, generated, and excluded code;
 - the system's architectural ownership boundaries;
 - its non-negotiable product or operational invariants;

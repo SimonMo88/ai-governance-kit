@@ -9,21 +9,6 @@ live configuration and authorities remain authoritative.
 - Last rollback version: `<VERSION_IDENTIFIER_OR_NONE>`
 - User language: `<LANGUAGE>`
 
-## Line-length coverage
-
-- Selected maximum: `<CHARACTER_COUNT>`
-- Selected mode: `<STRICT_OR_LOOSE>`
-- Documentation treatment: `<INCLUDED_OR_OMITTED>`
-- Enforcing or advisory mechanism: `<COMMAND_TOOL_MANUAL_REVIEW_OR_NONE>`
-- Gate or review location: `<PATH_COMMAND_OR_NONE>`
-- Explicit exclusions: `<PATHS_CONTENT_TYPES_OR_NONE>`
-- Last verified: `<UTC_TIMESTAMP_OR_NOT_VERIFIED>`
-
-For strict mode, record evidence that an applicable over-limit line fails the
-named check and that the check runs in the promised gate. For loose mode, record
-where the target is communicated or reviewed and do not describe it as a failing
-gate. Apply the recorded documentation inclusion or omission consistently.
-
 ## Capability map
 
 For each applicable capability, record its state, adopted command or manual

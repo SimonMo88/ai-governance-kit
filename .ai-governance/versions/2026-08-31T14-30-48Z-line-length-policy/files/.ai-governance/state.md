@@ -7,13 +7,6 @@
 - Last reviewed on: `<UTC_DATE>`
 - Local governance owner: `<OWNER_OR_TEAM>`
 
-## Owner-selected line-length policy
-
-- Maximum line length: `<CHARACTER_COUNT>`
-- Enforcement mode: `<STRICT_OR_LOOSE>`
-- Documentation treatment: `<INCLUDED_OR_OMITTED>`
-- Approved exceptions: `<PATHS_CONTENT_TYPES_OR_NONE>`
-
 ## Authority map
 
 - Root agent instructions: `<PATH>`
@@ -47,9 +40,3 @@ belong in `enforcement.md`; do not report prose policy as executable enforcement
   preserving native line-oriented documentation. The immutable pre-change
   version with the same identifier is the rollback version. No stack-specific
   checker was added because adopting repositories own executable enforcement.
-
-- `2026-08-31T14-30-48Z-line-length-policy`: upgraded bootstrap and upgrade
-  workflows to require an explicit owner decision about maximum line length,
-  strict or loose enforcement, and whether documentation is included or omitted.
-  The immutable pre-change version with the same identifier is the rollback
-  version. No enforcement tooling was changed.

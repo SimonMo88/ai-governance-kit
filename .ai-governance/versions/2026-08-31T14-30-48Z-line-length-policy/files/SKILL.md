@@ -23,36 +23,6 @@ Use the mode implied by the request:
 If the request combines modes, bootstrap or upgrade governance before using it
 to refactor code.
 
-## Required line-length decision
-
-Before every bootstrap or upgrade, inspect any existing formatter, linter, and
-editor settings, then ask the user all three questions below and wait for their
-answers:
-
-1. What maximum line length should the repository use? Give examples such as 80
-   characters for compact code, 100 for a balanced default, and 120 for wider
-   codebases.
-2. Should the limit be strict or loose? Explain that strict means an applicable
-   line over the limit fails the configured check unless it matches an explicit
-   repository exception, while loose means the limit is a readability target and
-   a justified longer line does not fail verification solely because of length.
-3. Should documentation be included in the line count or omitted? Explain that
-   inclusion covers maintained documentation files, documentation comments, and
-   docstrings, while omission exempts all three from the limit.
-
-Use a concrete example when presenting the choices. With a 100-character limit,
-strict mode rejects an applicable 101-character code line; loose mode treats the
-same line as a review decision and permits it when wrapping would reduce
-readability. If documentation is included, a 101-character maintained Markdown
-or docstring line receives the same treatment; if omitted, that documentation
-line is not evaluated against the limit.
-
-Always ask even when the repository already has a configured value. Present the
-discovered setting as context rather than treating it as renewed owner approval.
-Record the answers in the engineering authority and `.ai-governance/state.md`,
-and record the actual executable or manual coverage in
-`.ai-governance/enforcement.md`.
-
 Before every bootstrap, upgrade, or approved enforcement change, read and follow
 [references/versioning-and-revert.md](references/versioning-and-revert.md). Use
 the same reference when the user asks to list, inspect, or revert governance

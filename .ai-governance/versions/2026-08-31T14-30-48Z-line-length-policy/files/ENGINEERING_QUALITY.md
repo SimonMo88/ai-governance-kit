@@ -20,25 +20,6 @@ operate, and safely modify it.
 - Follow established language and framework conventions unless the repository
   explicitly defines a different standard.
 
-## Line length
-
-- Maximum line length: `<MAX_LINE_LENGTH>` characters.
-- Enforcement mode: `<STRICT_OR_LOOSE>`.
-- Documentation treatment: `<INCLUDE_OR_OMIT_DOCUMENTATION>`.
-- Strict enforcement means every applicable maintained code or configuration line
-  over the maximum fails the configured check unless it matches an explicit
-  repository exception. For example, with a 100-character maximum, a
-  101-character applicable line fails verification.
-- Loose enforcement means the maximum is a readability target. Prefer wrapping
-  when it improves readability, but allow a justified longer line without failing
-  verification solely because of length.
-- When documentation is included, apply the selected mode to maintained
-  documentation files, documentation comments, and docstrings. When documentation
-  is omitted, exempt all three from line-length counting.
-- Define repository-specific treatment for generated files, lockfiles, snapshots,
-  unbreakable URLs, and other machine-owned or indivisible content. Do not hide
-  exceptions inside tooling configuration without documenting them.
-
 ## Responsibilities and structure
 
 - Give every module one clear primary responsibility.
@@ -124,5 +105,3 @@ Before completing a change, verify:
    have been considered where relevant.
 7. No unrelated changes, obsolete code, or unnecessary complexity were added.
 8. Formatting, static analysis, tests, and required builds have been run.
-9. Applicable lines follow the repository's selected maximum, enforcement mode,
-   documentation treatment, and documented exceptions.

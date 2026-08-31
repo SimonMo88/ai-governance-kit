@@ -8,18 +8,6 @@ Before changing existing governance, follow
 repository, snapshot every affected governance file, record absent files, and
 verify the snapshot manifest and digests.
 
-Before bootstrap or upgrade edits begin, the adopter must answer:
-
-1. the maximum line length, with 80, 100, and 120 characters presented as
-   illustrative choices rather than defaults;
-2. whether enforcement is strict or loose, after seeing examples of how each
-   mode treats an over-limit line; and
-3. whether documentation files, documentation comments, and docstrings are
-   included in or omitted from the limit.
-
-The agent must inspect and disclose existing settings, ask all three questions,
-and wait. Existing configuration is evidence, not permission to skip the choice.
-
 ## 1. Copy the universal authorities
 
 Copy the root Markdown files and `docs/` templates into the adopting repository.
@@ -67,11 +55,6 @@ Map the repository's real commands for:
 
 If the repository lacks an important check, record that as an adoption gap. Do
 not claim a command exists or a rule is enforced when it is only aspirational.
-
-For strict line length, identify the exact check and gate that fail on an
-applicable over-limit line. For loose line length, record the formatter,
-review-time guidance, or manual check without claiming a hard gate. Apply the
-user's documentation inclusion or omission consistently.
 
 ## 5. Document actual ownership and invariants
 

@@ -3,22 +3,6 @@
 Use this mode when agent instructions or engineering authorities already exist.
 An upgrade is a merge and clarification exercise, not a template overwrite.
 
-## Reconfirm line-length policy
-
-Inspect the repository's current formatter, linter, editor, and written
-line-length settings. Present what is currently configured, then ask the three
-line-length questions required by `SKILL.md` and wait for the user's answers.
-Give concrete 80-, 100-, and 120-character examples, explain strict versus loose
-behavior with a representative passing and over-limit line, and ask whether
-documentation files, documentation comments, and docstrings are included or
-omitted. Never treat an existing setting as renewed owner approval.
-
-Update the engineering authority and `.ai-governance/state.md` with the selected
-maximum, enforcement mode, and documentation treatment. Update
-`.ai-governance/enforcement.md` with the current executable or manual coverage.
-If the selected policy is not enforced, report the gap; the upgrade does not
-authorize changing enforcement tooling.
-
 Before editing active governance, create and verify the pre-change version
 required by `versioning-and-revert.md`.
 
@@ -73,8 +57,6 @@ the capability clearly.
 ## Prove the upgrade
 
 Check links, paths, command names, scope discovery, and unresolved placeholders.
-Confirm the line-length decision agrees across the engineering authority, state,
-and enforcement record.
 Run governance-specific checks followed by the repository's complete gate. Report
 the previous and new authority map, preserved local rules, removed duplication,
 unenforced policy, the version that can restore the prior governance, and any
