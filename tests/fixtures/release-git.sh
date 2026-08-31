@@ -4,6 +4,10 @@ set -eu
 
 printf '%s\n' "$*" >> "$RELEASE_COMMAND_LOG"
 
+if [ "${1:-}" = "--no-pager" ]; then
+  shift
+fi
+
 case "$1 ${2:-}" in
   "branch --show-current") printf 'main\n' ;;
   "status --porcelain") ;;
