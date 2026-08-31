@@ -70,11 +70,6 @@ operate, and safely modify it.
 - Explain why a decision exists when it represents a business rule, security
   requirement, compatibility constraint, external limitation, or trade-off.
 - Do not add comments that only restate syntax.
-- When a project uses block-style documentation, format every documentation block
-  vertically: place its opening delimiter, content, and closing delimiter on
-  separate lines, even when the content is only one line. Never use a compressed
-  single-line documentation block. Preserve native line-oriented documentation
-  forms where the language or framework defines them.
 - Keep documentation next to the behavior it governs and update it with the code.
 - Record significant architectural decisions when their reasoning would otherwise
   be lost.
