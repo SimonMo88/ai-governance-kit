@@ -286,9 +286,9 @@ show_scoped_prompt() {
   request="$request$extension_clause"
 
   if [ "$action" = "audit" ]; then
-    say "Use \$ai-governance to $request."
+    say "Use /ai-governance to $request."
   else
-    say "Use \$ai-governance to $request under this repository's local rules."
+    say "Use /ai-governance to $request under this repository's local rules."
     say "Run the matching audit first and ask for approval before editing."
   fi
 }
@@ -298,16 +298,16 @@ show_prompt() {
   case "$prompt_mode" in
     bootstrap)
       [ "$#" -eq 1 ] || fail "prompt bootstrap takes no arguments"
-      say 'Use $ai-governance to introduce AI governance to this repository.'
+      say 'Use /ai-governance to introduce AI governance to this repository.'
       ;;
     upgrade)
       [ "$#" -eq 1 ] || fail "prompt upgrade takes no arguments"
-      say 'Use $ai-governance to upgrade the existing governance in this repository.'
+      say 'Use /ai-governance to upgrade the existing governance in this repository.'
       ;;
     assess)
       [ "${2:-}" = "enforcement" ] && [ "$#" -eq 2 ] ||
         fail "try: prompt assess enforcement"
-      say 'Use $ai-governance to assess executable governance enforcement in this repository.'
+      say 'Use /ai-governance to assess executable governance enforcement in this repository.'
       ;;
     audit|refactor)
       [ "$#" -ge 2 ] ||

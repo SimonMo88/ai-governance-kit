@@ -76,6 +76,7 @@ fi
 
 install_output=$(sh "$PROJECT_ROOT/install.sh")
 assert_contains "$install_output" "installed successfully"
+assert_contains "$install_output" "ask: /ai-governance bootstrap"
 [ -x "$BIN_DIR/ai-governance" ] || fail "CLI link was not installed"
 [ -r "$CODEX_DIR/ai-governance/SKILL.md" ] || fail "Codex skill link is incomplete"
 [ -r "$CLAUDE_DIR/ai-governance/SKILL.md" ] || fail "Claude skill link is incomplete"
@@ -97,11 +98,20 @@ assert_contains "$status_output" "Claude Code: installed"
 doctor_output=$("$BIN_DIR/ai-governance" doctor)
 assert_contains "$doctor_output" "Installation: healthy"
 
+bootstrap_output=$("$BIN_DIR/ai-governance" prompt bootstrap)
+assert_contains "$bootstrap_output" "Use /ai-governance to introduce AI governance"
+
+upgrade_output=$("$BIN_DIR/ai-governance" prompt upgrade)
+assert_contains "$upgrade_output" "Use /ai-governance to upgrade the existing governance"
+
+assess_output=$("$BIN_DIR/ai-governance" prompt assess enforcement)
+assert_contains "$assess_output" "Use /ai-governance to assess executable governance"
+
 prompt_output=$("$BIN_DIR/ai-governance" prompt refactor folder src/payments)
-assert_contains "$prompt_output" "refactor folder src/payments"
+assert_contains "$prompt_output" "Use /ai-governance to refactor folder src/payments"
 
 audit_file_output=$("$BIN_DIR/ai-governance" prompt audit file src/payments/service.ts)
-assert_contains "$audit_file_output" "audit file src/payments/service.ts"
+assert_contains "$audit_file_output" "Use /ai-governance to audit file src/payments/service.ts"
 
 audit_folder_output=$("$BIN_DIR/ai-governance" prompt audit folder src/payments \
   --extensions ' TS, .tsx,ts ')

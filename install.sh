@@ -222,4 +222,4 @@ say "Next steps:"
 say "  ai-governance status"
 say "  ai-governance doctor"
 say ""
-say 'Then open a project in Codex or Claude and ask: $ai-governance bootstrap'
+say 'Then open a project in Codex or Claude and ask: /ai-governance bootstrap'

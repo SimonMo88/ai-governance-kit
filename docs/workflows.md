@@ -1,7 +1,6 @@
 # Ways to use the kit
 
-Run these workflows in Codex with `$ai-governance` or in Claude Code with
-`/ai-governance`.
+Run these workflows in Codex or Claude Code with `/ai-governance`.
 
 ## Bootstrap
 

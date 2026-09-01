@@ -16,7 +16,7 @@ managed CLI. Do not search broadly through the user's home directory.
 
 ## Update and rollback
 
-An explicit `$ai-governance update` or `$ai-governance rollback` request
+An explicit `/ai-governance update` or `/ai-governance rollback` request
 authorizes that installation action, subject to the host agent's normal command
 approval and filesystem rules. Inspect status first, explain the version change,
 then use the managed CLI as the only implementation. Do not recreate its update
