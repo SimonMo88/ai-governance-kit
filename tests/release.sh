@@ -18,6 +18,8 @@ assert_contains() {
 }
 
 make_fixture() {
+  # Real release orchestration runs against deterministic git and GitHub fakes;
+  # unrelated checks are minimal successful scripts inside each isolated root.
   fixture_root=$1
   mkdir -p "$fixture_root/bin" "$fixture_root/scripts" "$fixture_root/tests"
   cp "$PROJECT_ROOT/scripts/release.sh" "$fixture_root/scripts/release.sh"
@@ -45,7 +47,8 @@ if ! (
   cat "$SUCCESS_LOG" >&2
   fail "valid exact-version release failed"
 fi
-[ "$(sed -n '1p' "$SUCCESS_ROOT/VERSION")" = "0.2.0" ] || fail "successful release did not update VERSION"
+[ "$(sed -n '1p' "$SUCCESS_ROOT/VERSION")" = "0.2.0" ] ||
+  fail "successful release did not update VERSION"
 assert_contains "$COMMAND_LOG" "commit -m chore: release v0.2.0 -- VERSION"
 assert_contains "$COMMAND_LOG" "push origin main"
 assert_contains "$COMMAND_LOG" "tag -a v0.2.0 -m Release v0.2.0"
@@ -63,7 +66,8 @@ make_fixture "$PATCH_ROOT"
     PATH="$PATCH_ROOT/bin:$PATH" RELEASE_COMMAND_LOG="$TEST_ROOT/patch-commands.log" \
       sh scripts/release.sh > "$TEST_ROOT/patch.log" 2>&1
 )
-[ "$(sed -n '1p' "$PATCH_ROOT/VERSION")" = "0.1.1" ] || fail "patch shortcut chose the wrong version"
+[ "$(sed -n '1p' "$PATCH_ROOT/VERSION")" = "0.1.1" ] ||
+  fail "patch shortcut chose the wrong version"
 
 CANCEL_ROOT="$TEST_ROOT/cancel"
 make_fixture "$CANCEL_ROOT"
@@ -73,7 +77,8 @@ make_fixture "$CANCEL_ROOT"
     PATH="$CANCEL_ROOT/bin:$PATH" RELEASE_COMMAND_LOG="$TEST_ROOT/cancel-commands.log" \
       sh scripts/release.sh > "$TEST_ROOT/cancel.log" 2>&1
 )
-[ "$(sed -n '1p' "$CANCEL_ROOT/VERSION")" = "0.1.0" ] || fail "cancelled release changed VERSION"
+[ "$(sed -n '1p' "$CANCEL_ROOT/VERSION")" = "0.1.0" ] ||
+  fail "cancelled release changed VERSION"
 
 INVALID_ROOT="$TEST_ROOT/invalid"
 make_fixture "$INVALID_ROOT"
@@ -85,7 +90,8 @@ if (
 ); then
   fail "release accepted an unchanged version"
 fi
-[ "$(sed -n '1p' "$INVALID_ROOT/VERSION")" = "0.1.0" ] || fail "invalid release changed VERSION"
+[ "$(sed -n '1p' "$INVALID_ROOT/VERSION")" = "0.1.0" ] ||
+  fail "invalid release changed VERSION"
 assert_contains "$TEST_ROOT/invalid.log" "new version must be greater than 0.1.0"
 
 grep -F -- '--generate-notes' "$PROJECT_ROOT/.github/workflows/release.yml" >/dev/null ||

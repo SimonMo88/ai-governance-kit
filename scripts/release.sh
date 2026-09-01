@@ -21,6 +21,7 @@ require_command gh
 current_version=$(sed -n '1p' VERSION)
 
 validate_version() {
+  # Accept exactly three numeric components and reject ambiguous leading zeros.
   version_to_validate=$1
   case "$version_to_validate" in
     ''|*[!0-9.]*|.*|*.|*..*) return 1 ;;
@@ -50,17 +51,20 @@ version_is_greater() {
   '
 }
 
-validate_version "$current_version" || fail "VERSION must contain a version such as 0.2.0"
+validate_version "$current_version" ||
+  fail "VERSION must contain a version such as 0.2.0"
 
 branch=$(git branch --show-current)
 [ "$branch" = "main" ] || fail "switch to main before releasing (current branch: $branch)"
 
-[ -z "$(git status --porcelain)" ] || fail "commit or remove all worktree changes before releasing"
+[ -z "$(git status --porcelain)" ] ||
+  fail "commit or remove all worktree changes before releasing"
 
 git remote get-url origin >/dev/null 2>&1 || fail "the origin remote is missing"
 gh auth status >/dev/null 2>&1 || fail "sign in to GitHub with 'gh auth login'"
 
 printf 'Checking origin/main...\n'
+# Releases start only from the exact reviewed commit on origin/main.
 git fetch origin main --tags
 
 local_head=$(git rev-parse HEAD)
@@ -84,8 +88,10 @@ case "$version_choice" in
   major) version=$major_version ;;
   *) version=$version_choice ;;
 esac
-validate_version "$version" || fail "enter a version with three numeric parts, such as 0.2.0"
-version_is_greater "$current_version" "$version" || fail "new version must be greater than $current_version"
+validate_version "$version" ||
+  fail "enter a version with three numeric parts, such as 0.2.0"
+version_is_greater "$current_version" "$version" ||
+  fail "new version must be greater than $current_version"
 tag="v$version"
 
 if git rev-parse "$tag" >/dev/null 2>&1; then
@@ -97,6 +103,8 @@ fi
 
 version_changed=true
 version_committed=false
+# Restore VERSION on cancellation or pre-commit failure. Once committed, the
+# explicit recovery instructions below preserve the durable release state.
 restore_uncommitted_version() {
   if [ "$version_changed" = true ] && [ "$version_committed" = false ]; then
     printf '%s\n' "$current_version" > VERSION
@@ -128,6 +136,7 @@ git commit -m "chore: release $tag" -- VERSION
 version_committed=true
 
 if ! git push origin main; then
+  # Do not hide partial success: the local release commit remains recoverable.
   printf 'The release commit was created locally but could not be pushed.\n' >&2
   printf 'After fixing the problem, run: git push origin main\n' >&2
   exit 1
@@ -135,6 +144,7 @@ fi
 
 git tag -a "$tag" -m "Release $tag"
 if ! git push origin "$tag"; then
+  # Main is already published here, so retain the local tag for a safe retry.
   printf 'The tag was created locally but could not be pushed.\n' >&2
   printf 'After fixing the problem, run: git push origin %s\n' "$tag" >&2
   exit 1

@@ -4,6 +4,7 @@ set -eu
 
 PROJECT_ROOT=$(CDPATH= cd -- "$(dirname "$0")/.." && pwd)
 
+# These are user-facing navigation targets promised by the root README.
 for relative_path in \
   assets/ai-governance-kit-banner.jpg \
   assets/governance-chaos.png \
@@ -20,6 +21,7 @@ do
   }
 done
 
+# Skill routing depends on every workflow reference remaining installable.
 for relative_path in \
   references/manage-installation.md \
   references/bootstrap.md \
@@ -39,6 +41,7 @@ do
   }
 done
 
+# Bootstrap and upgrade must all preserve local governance history consistently.
 for workflow_file in \
   SKILL.md \
   ADOPTION.md \

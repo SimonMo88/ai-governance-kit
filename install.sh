@@ -18,6 +18,7 @@ fail() {
   exit 1
 }
 
+# Reject broad destinations because uninstall later removes this root recursively.
 case "$DATA_DIR" in
   ""|/|"$HOME"|"$HOME/")
     fail "the installation directory is too broad"
@@ -70,6 +71,8 @@ safe_skill_link() {
   skill_dir=$1
   skill_link="$skill_dir/ai-governance"
 
+  # Managed links may be refreshed, but real paths and unrelated links must
+  # survive installation untouched.
   if [ -e "$skill_link" ] && [ ! -L "$skill_link" ]; then
     fail "$skill_link already exists and is not managed by this installer"
   fi
@@ -100,6 +103,7 @@ check_managed_link_destination() {
   fi
 }
 
+# Complete every ownership preflight before downloading or changing any path.
 check_managed_link_destination "$BIN_DIR/ai-governance"
 case "$TARGET" in
   both)
@@ -119,6 +123,7 @@ archive_path="$temporary_dir/ai-governance-kit.tar.gz"
 checksum_path="$temporary_dir/ai-governance-kit.tar.gz.sha256"
 
 if [ -n "${AI_GOVERNANCE_ARCHIVE:-}" ]; then
+  # Tests and offline installs may provide a trusted local archive explicitly.
   cp "$AI_GOVERNANCE_ARCHIVE" "$archive_path"
   if [ -n "${AI_GOVERNANCE_CHECKSUM:-}" ]; then
     cp "$AI_GOVERNANCE_CHECKSUM" "$checksum_path"
@@ -134,7 +139,8 @@ fi
 if [ -f "$checksum_path" ]; then
   expected_checksum=$(sed -n '1{s/[[:space:]].*//;p;}' "$checksum_path")
   actual_checksum=$(shasum -a 256 "$archive_path" | sed 's/[[:space:]].*//')
-  [ "$expected_checksum" = "$actual_checksum" ] || fail "the downloaded file did not pass its safety check"
+  [ "$expected_checksum" = "$actual_checksum" ] ||
+    fail "the downloaded file did not pass its safety check"
 fi
 
 package_dir="$temporary_dir/package"
@@ -164,6 +170,8 @@ version_dir="$versions_dir/$version"
 mkdir -p "$versions_dir"
 
 if [ ! -d "$version_dir" ]; then
+  # Populate a temporary version completely before its atomic move makes the
+  # immutable version directory available to current and previous links.
   staged_version="$versions_dir/.installing-$version-$$"
   mv "$package_dir" "$staged_version"
   chmod +x "$staged_version/install.sh" "$staged_version/bin/ai-governance"
@@ -180,9 +188,11 @@ for required_file in \
   references/audit-project.md \
   references/refactor-file.md
 do
-  [ -r "$version_dir/$required_file" ] || fail "the installed version is incomplete: missing $required_file"
+  [ -r "$version_dir/$required_file" ] ||
+    fail "the installed version is incomplete: missing $required_file"
 done
 
+# Preserve the displaced current version before atomically switching current.
 if [ -L "$DATA_DIR/current" ]; then
   current_target=$(readlink "$DATA_DIR/current")
   if [ "$current_target" != "$version_dir" ]; then

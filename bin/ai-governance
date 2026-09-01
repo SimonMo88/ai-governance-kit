@@ -19,6 +19,7 @@ fail() {
   exit 1
 }
 
+# Reject broad deletion targets before any command can reach uninstall logic.
 case "$DATA_DIR" in
   ""|/|"$HOME"|"$HOME/")
     fail "the installation directory is too broad"
@@ -48,6 +49,7 @@ link_state() {
 }
 
 latest_version() {
+  # A failed network check is non-fatal; status reports it as unavailable.
   curl -fsSL "https://api.github.com/repos/$REPOSITORY/releases/latest" 2>/dev/null |
     sed -n 's/.*"tag_name"[[:space:]]*:[[:space:]]*"v\{0,1\}\([^"]*\)".*/\1/p' |
     sed -n '1p'
@@ -130,7 +132,8 @@ show_doctor() {
 }
 
 run_installer() {
-  [ -r "$CURRENT_LINK/install.sh" ] || fail "the installed updater is missing; install the kit again"
+  [ -r "$CURRENT_LINK/install.sh" ] ||
+    fail "the installed updater is missing; install the kit again"
   sh "$CURRENT_LINK/install.sh" "$@"
 }
 
@@ -146,9 +149,12 @@ resolve_link() {
 rollback_installation() {
   [ -L "$PREVIOUS_LINK" ] || fail "no previous version is available"
   current_target=$(resolve_link "$CURRENT_LINK") || fail "the current installation link is invalid"
-  previous_target=$(resolve_link "$PREVIOUS_LINK") || fail "the previous installation link is invalid"
+  previous_target=$(resolve_link "$PREVIOUS_LINK") ||
+    fail "the previous installation link is invalid"
   [ -r "$previous_target/VERSION" ] || fail "the previous installation is incomplete"
 
+  # Build the replacement before removing current, then retain current as the
+  # next rollback target so repeated rollbacks remain reversible.
   temporary_link="$DATA_DIR/.rollback-current.$$"
   ln -s "$previous_target" "$temporary_link"
   rm -f "$CURRENT_LINK"
@@ -169,6 +175,8 @@ repair_target() {
   esac
 
   skill_link="$skill_dir/ai-governance"
+  # Repair only links already owned by this managed installation. Real paths
+  # and links belonging to another installation are never replaced.
   if [ -e "$skill_link" ] && [ ! -L "$skill_link" ]; then
     fail "$skill_link is a real file or directory and will not be replaced"
   fi
@@ -194,6 +202,7 @@ uninstall_managed_files() {
     *) say "Nothing was removed."; exit 0 ;;
   esac
 
+  # Remove only links whose resolved targets live under the managed data root.
   for skill_link in \
     "$CODEX_SKILL_DIR/ai-governance" \
     "$CLAUDE_SKILL_DIR/ai-governance"
@@ -213,12 +222,16 @@ uninstall_managed_files() {
       "$DATA_DIR"/*) rm -f "$bin_link" ;;
     esac
   fi
+  # The marker and broad-target guard together authorize the only recursive
+  # deletion in this command.
   [ -r "$CURRENT_LINK/VERSION" ] || fail "the managed installation marker is missing"
   rm -rf "$DATA_DIR"
   say "AI Governance Kit was removed."
 }
 
 normalize_extensions() {
+  # Normalize once at the CLI boundary so generated prompts carry a stable,
+  # deduplicated extension contract into either agent.
   raw_extensions=$1
   [ -n "$raw_extensions" ] || fail "--extensions needs a comma-separated value"
   case "$raw_extensions" in
