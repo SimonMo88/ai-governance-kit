@@ -92,6 +92,10 @@ operate, and safely modify it.
 - Explain why a decision exists when it represents a business rule, security
   requirement, compatibility constraint, external limitation, or trade-off.
 - Do not add comments that only restate syntax.
+- In every maintained `.sh` script, document complex or non-obvious behavior
+  next to the code it governs. Explain the intent, assumptions, control flow,
+  quoting, pipelines, traps, cleanup, portability constraints, side effects, and
+  failure handling needed for a human maintainer to understand it safely.
 - When a project uses block-style documentation, format every documentation block
   vertically: place its opening delimiter, content, and closing delimiter on
   separate lines, even when the content is only one line. Never use a compressed
@@ -111,6 +115,7 @@ operate, and safely modify it.
 - Add or update tests for important behavior, boundaries, edge cases, and bug
   fixes.
 - Review generated changes before accepting them.
+- Format every commit message according to Conventional Commits 1.0.0.
 - Keep commits focused and describe the observable change, not the mechanics used
   to produce it.
 

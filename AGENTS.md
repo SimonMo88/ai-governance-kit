@@ -19,6 +19,12 @@ These instructions apply throughout the repository. A more deeply nested
 Before changing a subsystem, read its nearest `AGENTS.md` and every authority it
 explicitly requires.
 
+This repository contains distributable governance templates. When working on
+the kit itself, preserve angle-bracket placeholders in template files and use
+owner-selected values from `.ai-governance.local.md` when that ignored
+file is present. Adopting repositories must resolve applicable placeholders
+during bootstrap or upgrade.
+
 Before any implementation change, read `ENGINEERING_QUALITY.md`,
 `docs/product-invariants.md`, and `TESTING.md`. Read `SECURITY.md` whenever work
 touches a trust boundary, authentication, authorization, secrets, personal or
@@ -35,7 +41,8 @@ history.
   asking its author.
 - Keep changes cohesive. Split mixed responsibilities into independently
   reviewable batches.
-- Use the repository's established naming, formatting, and commit conventions.
+- Use the repository's established naming and formatting conventions.
+- Format every commit message according to Conventional Commits 1.0.0.
 - Do not bypass required quality checks or weaken tests to obtain a passing run.
 - Add an exception to a rule only through the repository's documented exception
   process, with an owner, rationale, scope, and review or expiry condition.

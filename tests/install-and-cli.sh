@@ -10,6 +10,9 @@ PACKAGE_PARENT="$TEST_ROOT/package-parent"
 PACKAGE_ROOT="$PACKAGE_PARENT/ai-governance-kit"
 ARCHIVE="$TEST_ROOT/ai-governance-kit.tar.gz"
 CHECKSUM="$TEST_ROOT/ai-governance-kit.tar.gz.sha256"
+TRACKED_FILES="$TEST_ROOT/tracked-files.txt"
+EXPECTED_ARCHIVE_FILES="$TEST_ROOT/expected-archive-files.txt"
+ACTUAL_ARCHIVE_FILES="$TEST_ROOT/actual-archive-files.txt"
 DATA_DIR="$TEST_ROOT/data"
 BIN_DIR="$TEST_ROOT/bin"
 CODEX_DIR="$TEST_ROOT/codex"
@@ -32,29 +35,21 @@ assert_contains() {
 }
 
 mkdir -p "$PACKAGE_ROOT"
-cp -R \
-  "$PROJECT_ROOT/.ai-governance" \
-  "$PROJECT_ROOT/assets" \
-  "$PROJECT_ROOT/bin" \
-  "$PROJECT_ROOT/docs" \
-  "$PROJECT_ROOT/references" \
-  "$PROJECT_ROOT/scopes" \
-  "$PACKAGE_ROOT/"
-cp \
-  "$PROJECT_ROOT/ADOPTION.md" \
-  "$PROJECT_ROOT/AGENTS.md" \
-  "$PROJECT_ROOT/AI_CONTEXT.md" \
-  "$PROJECT_ROOT/ENGINEERING_QUALITY.md" \
-  "$PROJECT_ROOT/README.md" \
-  "$PROJECT_ROOT/SECURITY.md" \
-  "$PROJECT_ROOT/SKILL.md" \
-  "$PROJECT_ROOT/TESTING.md" \
-  "$PROJECT_ROOT/VERSION" \
-  "$PROJECT_ROOT/install.sh" \
-  "$PACKAGE_ROOT/"
+git -C "$PROJECT_ROOT" ls-files > "$TRACKED_FILES"
+(
+  cd "$PROJECT_ROOT"
+  tar -cf - -T "$TRACKED_FILES"
+) | tar -xf - -C "$PACKAGE_ROOT"
 
 tar -czf "$ARCHIVE" -C "$PACKAGE_PARENT" ai-governance-kit
 shasum -a 256 "$ARCHIVE" > "$CHECKSUM"
+
+sed 's|^|ai-governance-kit/|' "$TRACKED_FILES" | sort > "$EXPECTED_ARCHIVE_FILES"
+tar -tzf "$ARCHIVE" | sed '/\/$/d' | sort > "$ACTUAL_ARCHIVE_FILES"
+if ! cmp -s "$EXPECTED_ARCHIVE_FILES" "$ACTUAL_ARCHIVE_FILES"; then
+  diff -u "$EXPECTED_ARCHIVE_FILES" "$ACTUAL_ARCHIVE_FILES" >&2 || true
+  fail "package contents differ from Git's tracked files"
+fi
 
 export AI_GOVERNANCE_ARCHIVE="$ARCHIVE"
 export AI_GOVERNANCE_CHECKSUM="$CHECKSUM"
