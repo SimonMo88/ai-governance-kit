@@ -35,6 +35,8 @@ assert_contains() {
 }
 
 mkdir -p "$PACKAGE_ROOT"
+# Export current working copies of tracked files only. This mirrors the release
+# boundary while still exercising uncommitted changes during local test runs.
 git -C "$PROJECT_ROOT" ls-files > "$TRACKED_FILES"
 (
   cd "$PROJECT_ROOT"
@@ -44,6 +46,8 @@ git -C "$PROJECT_ROOT" ls-files > "$TRACKED_FILES"
 tar -czf "$ARCHIVE" -C "$PACKAGE_PARENT" ai-governance-kit
 shasum -a 256 "$ARCHIVE" > "$CHECKSUM"
 
+# Compare file manifests so ignored local policy and governance history cannot
+# enter an installation archive through a future packaging change.
 sed 's|^|ai-governance-kit/|' "$TRACKED_FILES" | sort > "$EXPECTED_ARCHIVE_FILES"
 tar -tzf "$ARCHIVE" | sed '/\/$/d' | sort > "$ACTUAL_ARCHIVE_FILES"
 if ! cmp -s "$EXPECTED_ARCHIVE_FILES" "$ACTUAL_ARCHIVE_FILES"; then
@@ -75,6 +79,15 @@ assert_contains "$install_output" "installed successfully"
 [ -x "$BIN_DIR/ai-governance" ] || fail "CLI link was not installed"
 [ -r "$CODEX_DIR/ai-governance/SKILL.md" ] || fail "Codex skill link is incomplete"
 [ -r "$CLAUDE_DIR/ai-governance/SKILL.md" ] || fail "Claude skill link is incomplete"
+
+# Prove adopters receive the shell-documentation rule, not merely the source
+# repository that produced the installation archive.
+if ! grep -F \
+  'In every maintained `.sh` script, document complex or non-obvious behavior' \
+  "$DATA_DIR/current/ENGINEERING_QUALITY.md" >/dev/null
+then
+  fail "installed engineering policy is missing the shell-documentation rule"
+fi
 
 status_output=$("$BIN_DIR/ai-governance" status)
 assert_contains "$status_output" "AI Governance Kit v$CURRENT_VERSION"
