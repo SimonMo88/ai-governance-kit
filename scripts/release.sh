@@ -75,19 +75,104 @@ patch_version=$(awk -F. '{ print $1 "." $2 "." $3 + 1 }' VERSION)
 minor_version=$(awk -F. '{ print $1 "." $2 + 1 ".0" }' VERSION)
 major_version=$(awk -F. '{ print $1 + 1 ".0.0" }' VERSION)
 
+render_version_menu() {
+  selected_option=$1
+  option_number=1
+
+  printf '\033[2K\rChoose a version with Up/Down, then press Enter:\n'
+  for option_label in \
+    "Patch ($patch_version)" \
+    "Minor ($minor_version)" \
+    "Major ($major_version)" \
+    "Exact version"
+  do
+    if [ "$option_number" -eq "$selected_option" ]; then
+      printf '\033[2K\r  > %s\n' "$option_label"
+    else
+      printf '\033[2K\r    %s\n' "$option_label"
+    fi
+    option_number=$((option_number + 1))
+  done
+}
+
+restore_version_menu_terminal() {
+  if [ -n "${version_menu_terminal_state:-}" ]; then
+    stty "$version_menu_terminal_state"
+    version_menu_terminal_state=
+  fi
+}
+
+choose_version_from_menu() {
+  require_command dd
+  require_command od
+  selected_option=1
+  version_menu_terminal_state=
+
+  # A real terminal needs character-at-a-time input. Tests may force the menu
+  # over a pipe, where dd already receives individual bytes without using stty.
+  if [ -t 0 ]; then
+    require_command stty
+    version_menu_terminal_state=$(stty -g)
+    stty -echo -icanon min 1 time 0
+  fi
+  trap 'restore_version_menu_terminal; exit 1' HUP INT TERM
+
+  render_version_menu "$selected_option"
+  while :; do
+    key_code=$(dd bs=1 count=1 2>/dev/null | od -An -tu1 | tr -d ' ')
+    case "$key_code" in
+      27)
+        # Arrow keys arrive as Escape followed by a two-byte control sequence.
+        arrow_code=$(dd bs=1 count=2 2>/dev/null | od -An -tx1 | tr -d ' \n')
+        case "$arrow_code" in
+          5b41) selected_option=$((selected_option - 1)) ;;
+          5b42) selected_option=$((selected_option + 1)) ;;
+          *) continue ;;
+        esac
+        [ "$selected_option" -ge 1 ] || selected_option=4
+        [ "$selected_option" -le 4 ] || selected_option=1
+        printf '\033[5A'
+        render_version_menu "$selected_option"
+        ;;
+      10|13) break ;;
+      "") restore_version_menu_terminal; fail "version selection ended unexpectedly" ;;
+    esac
+  done
+
+  restore_version_menu_terminal
+  trap - HUP INT TERM
+  case "$selected_option" in
+    1) version=$patch_version ;;
+    2) version=$minor_version ;;
+    3) version=$major_version ;;
+    4)
+      printf 'Enter an exact version: '
+      read -r version
+      ;;
+  esac
+}
+
+choose_version_from_line() {
+  printf 'Suggested versions:\n'
+  printf '  patch: %s\n' "$patch_version"
+  printf '  minor: %s\n' "$minor_version"
+  printf '  major: %s\n' "$major_version"
+  printf 'Choose patch, minor, major, or enter an exact version: '
+  read -r version_choice
+  case "$version_choice" in
+    patch) version=$patch_version ;;
+    minor) version=$minor_version ;;
+    major) version=$major_version ;;
+    *) version=$version_choice ;;
+  esac
+}
+
 printf '\nCurrent version: %s\n' "$current_version"
-printf 'Suggested versions:\n'
-printf '  patch: %s\n' "$patch_version"
-printf '  minor: %s\n' "$minor_version"
-printf '  major: %s\n' "$major_version"
-printf 'Choose patch, minor, major, or enter an exact version: '
-read -r version_choice
-case "$version_choice" in
-  patch) version=$patch_version ;;
-  minor) version=$minor_version ;;
-  major) version=$major_version ;;
-  *) version=$version_choice ;;
-esac
+if { [ -t 0 ] && [ -t 1 ]; } || [ "${AI_GOVERNANCE_RELEASE_MENU:-}" = "always" ]; then
+  choose_version_from_menu
+else
+  choose_version_from_line
+fi
 validate_version "$version" ||
   fail "enter a version with three numeric parts, such as 0.2.0"
 version_is_greater "$current_version" "$version" ||

@@ -69,6 +69,44 @@ make_fixture "$PATCH_ROOT"
 [ "$(sed -n '1p' "$PATCH_ROOT/VERSION")" = "0.1.1" ] ||
   fail "patch shortcut chose the wrong version"
 
+# Force the interactive branch over a pipe so arrow decoding remains
+# deterministic in CI without depending on a platform-specific pseudo-terminal.
+MENU_ROOT="$TEST_ROOT/menu"
+make_fixture "$MENU_ROOT"
+MENU_LOG="$TEST_ROOT/menu.log"
+if ! (
+  cd "$MENU_ROOT"
+  printf '\033[B\nno\n' |
+    PATH="$MENU_ROOT/bin:$PATH" \
+      RELEASE_COMMAND_LOG="$TEST_ROOT/menu-commands.log" \
+      AI_GOVERNANCE_RELEASE_MENU=always \
+      sh scripts/release.sh > "$MENU_LOG" 2>&1
+); then
+  cat "$MENU_LOG" >&2
+  fail "arrow-key version selection failed"
+fi
+[ "$(sed -n '1p' "$MENU_ROOT/VERSION")" = "0.1.0" ] ||
+  fail "cancelled menu release changed VERSION"
+assert_contains "$MENU_LOG" "> Minor (0.2.0)"
+
+MENU_EXACT_ROOT="$TEST_ROOT/menu-exact"
+make_fixture "$MENU_EXACT_ROOT"
+MENU_EXACT_LOG="$TEST_ROOT/menu-exact.log"
+if ! (
+  cd "$MENU_EXACT_ROOT"
+  printf '\033[A\n0.2.0\nno\n' |
+    PATH="$MENU_EXACT_ROOT/bin:$PATH" \
+      RELEASE_COMMAND_LOG="$TEST_ROOT/menu-exact-commands.log" \
+      AI_GOVERNANCE_RELEASE_MENU=always \
+      sh scripts/release.sh > "$MENU_EXACT_LOG" 2>&1
+); then
+  cat "$MENU_EXACT_LOG" >&2
+  fail "up-arrow exact-version selection failed"
+fi
+[ "$(sed -n '1p' "$MENU_EXACT_ROOT/VERSION")" = "0.1.0" ] ||
+  fail "cancelled exact-version menu release changed VERSION"
+assert_contains "$MENU_EXACT_LOG" "> Exact version"
+
 CANCEL_ROOT="$TEST_ROOT/cancel"
 make_fixture "$CANCEL_ROOT"
 (

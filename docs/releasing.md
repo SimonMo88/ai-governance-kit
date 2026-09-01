@@ -22,11 +22,12 @@ branch differs from GitHub or if any tracked or untracked files remain.
 ```
 
 The script shows the current version and calculates the next patch, minor, and
-major versions. Enter `patch`, `minor`, or `major` to use one of those
-suggestions, or enter an exact greater three-part numeric version such as
-`0.2.0`, without a leading `v`. After validation and confirmation, the script
-updates and commits only `VERSION`, pushes `main`, and creates and pushes the
-corresponding tag.
+major versions. Use Up and Down to select patch, minor, major, or an exact
+version, then press Enter. The exact-version option accepts a greater three-part
+numeric version such as `0.2.0`, without a leading `v`. Piped automation retains
+the existing `patch`, `minor`, `major`, or exact-version line input. After
+validation and confirmation, the script updates and commits only `VERSION`,
+pushes `main`, and creates and pushes the corresponding tag.
 
 Pushing the tag starts the GitHub release workflow. The workflow builds the
 download, checksum, and installer files, then publishes a GitHub release with
